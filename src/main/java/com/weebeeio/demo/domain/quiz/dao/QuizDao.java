@@ -3,22 +3,29 @@ package com.weebeeio.demo.domain.quiz.dao;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 
 @Data
 @Entity
+@Table(name = "quiz")
 public class QuizDao {
-
-    //퀴즈번호
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer quiz_id;
+    @Column(name = "quiz_id")
+    private Integer quizId;          // 퀴즈 고유 ID
 
-    @Column(nullable = false)
-    private Integer user_id; // 제목
-    private String quiz_level;
-    private String quiz_answer;
+    @Column(name = "user_id", nullable = false)
+    private Integer userId;          // 퀴즈를 생성한 사용자 ID
 
+    @Column(name = "subject", nullable = false)
+    private String subject;          // 퀴즈 주제
+
+    @Column(name = "quiz_level")
+    private String quizLevel;        // 퀴즈 난이도 (EASY, MEDIUM, HARD)
+
+    @Column(name = "quiz_answer", nullable = false)
+    private String quizAnswer;       // 퀴즈 정답
+
+   
 }
 
 
