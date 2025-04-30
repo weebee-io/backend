@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>맞춤형 금융 상품 추천</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-center mb-4">맞춤형 금융 상품 추천</h2>
+
+            <!-- 주식 상품 추천 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">추천 주식 상품</h4>
+                </div>
+                <div class="card-body">
+                    <div th:each="stock : ${recommendations.stockRecommendations}" class="mb-3 p-3 border rounded">
+                        <h5 th:text="${stock.stockName}" class="text-primary"></h5>
+                        <p class="mb-2"><strong>상품 번호:</strong> <span th:text="${stock.stockNo}"></span></p>
+                        <p class="mb-2"><strong>난이도:</strong> <span th:text="${stock.stockRank}"></span></p>
+                        <p class="mb-2"><strong>상세 설명:</strong> <span th:text="${stock.stockDetail}"></span></p>
+                        <div th:if="${stock.stockUrl != null and !stock.stockUrl.isEmpty()}" class="mt-2">
+                            <a th:href="${stock.stockUrl}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-link-45deg"></i> 상세 정보 보기
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 예적금 상품 추천 -->
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">추천 예적금 상품</h4>
+                </div>
+                <div class="card-body">
+                    <div th:each="deposit : ${recommendations.depositRecommendations}" class="mb-3 p-3 border rounded">
+                        <h5 th:text="${deposit.depositName}" class="text-success"></h5>
+                        <p class="mb-2"><strong>상품 번호:</strong> <span th:text="${deposit.depositNo}"></span></p>
+                        <p class="mb-2"><strong>난이도:</strong> <span th:text="${deposit.depositRank}"></span></p>
+                        <p class="mb-0"><strong>상세 설명:</strong> <span th:text="${deposit.depositDetail}"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

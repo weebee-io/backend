@@ -18,6 +18,7 @@ public class RecommendationResponse {
         private String stockName;
         private int stockRank;
         private String stockDetail;
+        private String stockUrl;
     }
 
     @Getter
