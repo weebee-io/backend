@@ -3,15 +3,21 @@ package com.weebeeio.demo.domain.quiz.dao;
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Data
 @Entity
 @Table(name = "quiz_result")
-public class QuizResultDao {
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class QuizResultDao {       // 결과 고유 ID
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "result_id")
-    private Integer resultId;        // 결과 고유 ID
+    @Column(name = "quizResult_id")
+    private Integer quizResultId;
+
+    @Column(name = "user_id",nullable = false)
+    private Integer userId;
 
     @Column(name = "is_correct", nullable = false)
     private Boolean isCorrect;       // 정답 여부
@@ -21,5 +27,10 @@ public class QuizResultDao {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id", nullable = false)
-    private QuizDao quiz;            // 연결된 퀴즈
+    private QuizDao quizId;            // 연결된 퀴즈
+
+
+    // @OneToMany(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "user_id",nullable = false)
+    // private UserDao user_id;
 }
