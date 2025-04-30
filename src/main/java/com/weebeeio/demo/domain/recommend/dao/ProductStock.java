@@ -22,4 +22,7 @@ public class ProductStock {
     
     @Column(name = "stock_detail")
     private String stockDetail;
+
+    @Column(name = "stock_url")
+    private String stockUrl;
 } 

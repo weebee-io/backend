@@ -28,6 +28,7 @@ public class RecommendationService {
                 .stockName(stock.getStockName())
                 .stockRank(stock.getStockRank())
                 .stockDetail(stock.getStockDetail())
+                .stockUrl(stock.getStockUrl())
                 .build())
             .collect(Collectors.toList());
 
