@@ -1,11 +1,9 @@
-### 커밋 메세지
+## 커밋 규칙
 
-- feat: : 새로운 기능 추가/수정/삭제
-- refactor : 버그를 수정하거나 기능 추가가 없는 단순 코드 변경
-- fix: 버그, 오류 해결
-- test: : 테스트 코드
-- chore: 빌드 업무 수정, settings.py 수정 등
-- docs: Readme를 비롯한 문서 변경시
-- init: initial commit을 할 시
-- build: 라이브러리 추가 등
-- !HOTFIX: 치명적 버그를 급하게 수정할 때
+feat : 새로운 기능 추가
+fix : 버그 수정
+docs : 문서 수정
+style : 코드 포맷팅, 세미콜론 누락, 코드 변경이 없는 경우
+refactor : 코드 리펙토링
+test : 테스트 코드, 리펙토링 테스트 코드 추가
+chore : 빌드 업무 수정, 패키지 매니저 수정
