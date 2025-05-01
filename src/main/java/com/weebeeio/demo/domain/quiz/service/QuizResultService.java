@@ -1,7 +1,7 @@
 package com.weebeeio.demo.domain.quiz.service;
 
 import com.weebeeio.demo.domain.quiz.dao.QuizResultDao;
-import com.weebeeio.demo.domain.quiz.repository.QuizRepository;
+
 import com.weebeeio.demo.domain.quiz.repository.QuizResultRepository;
 
 import java.util.List;
@@ -21,7 +21,9 @@ public class QuizResultService {
     }
 
     
-
+    public Optional<QuizResultDao> findResultbyIdandQuizid(Integer user_id,Integer quiz_id){
+        return quizResultRepository.findByUserUserIdAndQuizIdQuizId(user_id,quiz_id);
+    }
 
 
 
@@ -42,7 +44,7 @@ public class QuizResultService {
 
 
     public List<QuizResultDao> getResultById(Integer user_id) {
-        return quizResultRepository.findByUserId(user_id);
+        return quizResultRepository.findByUser_UserId(user_id);
     }
 
 

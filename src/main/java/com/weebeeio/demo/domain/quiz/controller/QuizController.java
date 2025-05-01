@@ -51,7 +51,7 @@ public class QuizController {
     public String grading(@PathVariable Integer user_id,@PathVariable Integer quiz_id, @PathVariable String answer) {
         
         Optional<QuizDao> quiz = quizService.findquizbyid(quiz_id);
-        Optional<QuizResultDao> quizResult = quizResultService.findResultbyid(user_id);
+        Optional<QuizResultDao> quizResult = quizResultService.findResultbyIdandQuizid(user_id,quiz_id);
 
         String quizcorrect = quiz.get().getQuizAnswer();
 
