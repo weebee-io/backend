@@ -45,6 +45,6 @@ public class User {
     private String userSegment;  // 금융이해도 세그먼트
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<QuizResultDao> quizResults; 
+    private List<QuizResultDao> quizResults; // 퀴즈 결과 리스트
     
 } 
