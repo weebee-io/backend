@@ -1,5 +1,9 @@
 package com.weebeeio.demo.domain.login.entity;
 
+import java.util.List;
+
+import com.weebeeio.demo.domain.quiz.dao.QuizResultDao;
+
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,4 +43,8 @@ public class User {
 
     @Column(name = "user_segment", length = 45)
     private String userSegment;  // 금융이해도 세그먼트
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<QuizResultDao> quizResults; 
+    
 } 
