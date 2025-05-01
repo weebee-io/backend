@@ -39,10 +39,6 @@ public class QuizResultService {
     }
 
 
-
-
-
-
     public List<QuizResultDao> getResultById(Integer user_id) {
         return quizResultRepository.findByUser_UserId(user_id);
     }

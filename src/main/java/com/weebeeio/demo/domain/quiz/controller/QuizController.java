@@ -1,7 +1,6 @@
 package com.weebeeio.demo.domain.quiz.controller;
 
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,13 +65,11 @@ public class QuizController {
     }
 
 
-
-
     @ResponseBody
     @Operation(summary = "퀴즈 푼 현황", description = "유저가 현재 푼 퀴즈 현황")
     @GetMapping("/checkResult/{user_id}")
-    public List<QuizResultDao> checkResult(@PathVariable Integer user_id) {
-        return quizResultService.getResultById(user_id);
+    public Optional<QuizResultDao> checkResult(@PathVariable Integer user_id) {
+        return quizResultService.findResultbyid(user_id);
     }
     
 
