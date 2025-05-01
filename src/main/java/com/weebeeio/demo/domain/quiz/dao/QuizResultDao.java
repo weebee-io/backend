@@ -3,6 +3,8 @@ package com.weebeeio.demo.domain.quiz.dao;
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.Data;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.weebeeio.demo.domain.login.entity.User;
 
@@ -30,6 +32,7 @@ public class QuizResultDao {       // 결과 고유 ID
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore 
     private User user;  // User 엔티티와의 관계
 
 
