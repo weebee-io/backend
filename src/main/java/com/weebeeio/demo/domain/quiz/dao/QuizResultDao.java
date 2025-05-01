@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.weebeeio.demo.domain.login.entity.User;
 
 @Data
 @Entity
@@ -16,8 +17,6 @@ public class QuizResultDao {       // 결과 고유 ID
     @Column(name = "quizResult_id")
     private Integer quizResultId;
 
-    @Column(name = "user_id",nullable = false)
-    private Integer userId;
 
     @Column(name = "is_correct", nullable = false)
     private Boolean isCorrect;       // 정답 여부
@@ -29,8 +28,9 @@ public class QuizResultDao {       // 결과 고유 ID
     @JoinColumn(name = "quiz_id", nullable = false)
     private QuizDao quizId;            // 연결된 퀴즈
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;  // User 엔티티와의 관계
 
-    // @OneToMany(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "user_id",nullable = false)
-    // private UserDao user_id;
+
 }

@@ -1,7 +1,7 @@
 package com.weebeeio.demo.domain.quiz.repository;
 
 import com.weebeeio.demo.domain.quiz.dao.QuizDao;
-import com.weebeeio.demo.domain.quiz.dao.QuizResultDao;
+
 
 import java.util.List;
 import java.util.Optional;
