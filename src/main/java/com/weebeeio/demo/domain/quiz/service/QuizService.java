@@ -24,7 +24,7 @@ public class QuizService {
 
 
     
-    public Optional<QuizDao> getquiz(String subject, String level) {
+    public Optional<QuizDao> getquiz(String subject, Integer level) {
         
         //throw new UnsupportedOperationException("Unimplemented method 'getquiz'");
 
