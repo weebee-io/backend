@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface QuizRepository extends JpaRepository<QuizDao, Integer> {
 
-    Optional<QuizDao> findBySubjectAndQuizLevel(String subject, String quizLevel);
+    Optional<QuizDao> findBySubjectAndQuizLevel(String subject, Integer quizLevel);
 
     List<QuizDao> findByQuizId(Integer quizId);
 

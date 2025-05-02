@@ -18,7 +18,7 @@ public class QuizDao {
     private String subject;          // 퀴즈 주제
 
     @Column(name = "quiz_level")
-    private String quizLevel;        // 퀴즈 난이도 (EASY, MEDIUM, HARD)
+    private Integer quizLevel;        // 퀴즈 난이도 (1,3,5)
 
     @Column(name = "quiz_answer", nullable = false)
     private String quizAnswer;       // 퀴즈 정답
