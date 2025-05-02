@@ -2,6 +2,8 @@ package com.weebeeio.demo.domain.recommend.controller;
 
 import com.weebeeio.demo.domain.recommend.dto.RecommendationResponse;
 import com.weebeeio.demo.domain.recommend.service.RecommendationService;
+import com.weebeeio.demo.domain.login.entity.User;
+import com.weebeeio.demo.domain.login.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class RecommendationController {
 
     private final RecommendationService recommendationService;
+    private final UserRepository userRepository;
 
     @Operation(
         summary = "금융 상품 추천 조회 API",
@@ -29,13 +32,17 @@ public class RecommendationController {
         @Parameter(description = "사용자 ID", required = true)
         @PathVariable int userId
     ) {
-        RecommendationResponse response = recommendationService.getRecommendations(userId);
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        RecommendationResponse response = recommendationService.getRecommendations(user);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{userId}")
     public String showRecommendations(@PathVariable int userId, Model model) {
-        RecommendationResponse recommendations = recommendationService.getRecommendations(userId);
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        RecommendationResponse recommendations = recommendationService.getRecommendations(user);
         model.addAttribute("recommendations", recommendations);
         return "recommendations/result";
     }

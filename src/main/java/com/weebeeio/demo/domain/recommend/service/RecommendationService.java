@@ -1,7 +1,7 @@
 package com.weebeeio.demo.domain.recommend.service;
 
-import com.weebeeio.demo.domain.recommend.dao.ProductStock;
-import com.weebeeio.demo.domain.recommend.dao.ProductDeposit;
+import com.weebeeio.demo.domain.recommend.dao.FinanceProduct;
+import com.weebeeio.demo.domain.login.entity.User;
 import com.weebeeio.demo.domain.recommend.dto.RecommendationResponse;
 import com.weebeeio.demo.domain.recommend.repository.RecommendationRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,33 +18,23 @@ public class RecommendationService {
     private final RecommendationRepository recommendationRepository;
 
     @Transactional(readOnly = true)
-    public RecommendationResponse getRecommendations(int userId) {
-        List<ProductStock> stockResults = recommendationRepository.findStockRecommendations(userId);
-        List<ProductDeposit> depositResults = recommendationRepository.findDepositRecommendations(userId);
+    public RecommendationResponse getRecommendations(User user) {
+        List<FinanceProduct> products = recommendationRepository.findProductsByUserRank(user.getUserSegment());
 
-        List<RecommendationResponse.StockRecommendation> stockRecommendations = stockResults.stream()
-            .map(stock -> RecommendationResponse.StockRecommendation.builder()
-                .stockNo(stock.getStockNo())
-                .stockName(stock.getStockName())
-                .stockRank(stock.getStockRank())
-                .stockDetail(stock.getStockDetail())
-                .stockUrl(stock.getStockUrl())
-                .build())
-            .collect(Collectors.toList());
-
-        List<RecommendationResponse.DepositRecommendation> depositRecommendations = depositResults.stream()
-            .map(deposit -> RecommendationResponse.DepositRecommendation.builder()
-                .depositNo(deposit.getDepositNo())
-                .depositName(deposit.getDepositName())
-                .depositRank(deposit.getDepositRank())
-                .depositDetail(deposit.getDepositDetail())
+        List<RecommendationResponse.FinanceProductDto> recommendedProducts = products.stream()
+            .map(product -> RecommendationResponse.FinanceProductDto.builder()
+                .productId(product.getProductId())
+                .productName(product.getProductName())
+                .productDetail(product.getProductDetail())
+                .productRank(product.getProductRank())
+                .productUrl(product.getProductUrl())
                 .build())
             .collect(Collectors.toList());
 
         return RecommendationResponse.builder()
-            .userId(userId)
-            .stockRecommendations(stockRecommendations)
-            .depositRecommendations(depositRecommendations)
+            .userId(user.getUserId())
+            .userRank(user.getUserSegment())
+            .recommendedProducts(recommendedProducts)
             .build();
     }
 } 
