@@ -23,8 +23,8 @@ public class QuizService {
 
 
 
-    
-    public Optional<QuizDao> getquiz(String subject, String level) {
+    //수정정
+    public Optional<QuizDao> getquiz(String subject, Integer level) {
         
         //throw new UnsupportedOperationException("Unimplemented method 'getquiz'");
 

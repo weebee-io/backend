@@ -3,6 +3,8 @@ package com.weebeeio.demo.domain.quiz.controller;
 
 import java.util.Optional;
 
+import com.weebeeio.demo.domain.stats.dao.StatsDao;
+import com.weebeeio.demo.domain.stats.service.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,10 +31,13 @@ public class QuizController {
     private QuizService quizService;
     @Autowired
     private QuizResultService quizResultService;
+    @Autowired
+    private StatsService statsService;
 
-    QuizController(QuizService quizService,QuizResultService quizResultService ) {
+    QuizController(QuizService quizService,QuizResultService quizResultService,StatsService statsService ) {
         this.quizService = quizService;
         this.quizResultService = quizResultService;
+        this.statsService = statsService;
     }
 
     @ResponseBody
@@ -51,13 +56,27 @@ public class QuizController {
         
         Optional<QuizDao> quiz = quizService.findquizbyid(quiz_id);
         Optional<QuizResultDao> quizResult = quizResultService.findResultbyIdandQuizid(user_id,quiz_id);
+        Optional<StatsDao> stats = statsService.getStatsById(user_id);
 
         String quizcorrect = quiz.get().getQuizAnswer();
 
         if (answer.equals(quizcorrect)){
             boolean iscorrect = true;
             quizResult.get().setIsCorrect(iscorrect);
+            String subject = quiz.get().getSubject();
+            switch (subject) {
+                case "재태크":
+                   stats.get().setInvestStat(stats.get().getInvestStat()+quiz.get().getQuizLevel());
+                    break;
+                case "신용/소비":
+                    stats.get().setCreditStat(stats.get().getCreditStat()+quiz.get().getQuizLevel());
+                    break;
+                case "금융상식":
+                    stats.get().setFiStat(stats.get().getFiStat()+quiz.get().getQuizLevel());
+                    break;
+            }
             quizResultService.save(quizResult);
+            statsService.save(stats.get());
             return "정답";
         }
         return "오답";

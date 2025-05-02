@@ -21,4 +21,8 @@ public class StatsService {
     public Optional<StatsDao> getStatsById(Integer userid) {
         return statsRepository.findByUser_UserId(userid);
     }
+
+    public void save(StatsDao statsDao) {
+        statsRepository.save(statsDao);
+    }
 }
