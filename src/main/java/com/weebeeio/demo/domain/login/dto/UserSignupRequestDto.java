@@ -16,5 +16,6 @@ public class UserSignupRequestDto {
     private String name;
     private String gender;
     private Integer age;
+    private String userRank;
     private String userSegment;  // 금융이해도 세그먼트
 } 

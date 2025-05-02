@@ -38,13 +38,13 @@ public class User {
     @Column(length = 45)
     private String gender;
 
-    @Column(name = "user_rank", nullable = false)
+    @Column(name = "user_rank", nullable = true)
     private String userrank;
 
     @Column
     private Integer age;
 
-    @Column(name = "user_segment", length = 45)
+    @Column(name = "user_segment", length = 45, nullable = true)
     private String userSegment;  // 금융이해도 세그먼트
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
