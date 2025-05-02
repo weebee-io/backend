@@ -41,9 +41,14 @@ public class RecommendationController {
     @GetMapping("/{userId}")
     public String showRecommendations(@PathVariable int userId, Model model) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
         RecommendationResponse recommendations = recommendationService.getRecommendations(user);
-        model.addAttribute("recommendations", recommendations);
+
+        model.addAttribute("recommendations", recommendations); // 추천 리스트
+        model.addAttribute("user", user);  // 사용자 정보
+
         return "recommendations/result";
     }
+
 } 

@@ -19,7 +19,7 @@ public class RecommendationService {
 
     @Transactional(readOnly = true)
     public RecommendationResponse getRecommendations(User user) {
-        List<FinanceProduct> products = recommendationRepository.findProductsByUserRank(user.getUserSegment());
+        List<FinanceProduct> products = recommendationRepository.findByMatchingRank(user.getUserrank());
 
         List<RecommendationResponse.FinanceProductDto> recommendedProducts = products.stream()
             .map(product -> RecommendationResponse.FinanceProductDto.builder()
@@ -33,7 +33,7 @@ public class RecommendationService {
 
         return RecommendationResponse.builder()
             .userId(user.getUserId())
-            .userRank(user.getUserSegment())
+            .userRank(user.getUserrank())
             .recommendedProducts(recommendedProducts)
             .build();
     }
