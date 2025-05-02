@@ -43,7 +43,7 @@ public class QuizController {
     @ResponseBody
     @Operation(summary = "퀴즈 생성", description = "과목, 레벨로 퀴즈를 가져옵니다.")
     @GetMapping("/generation/{subject}/{level}")
-    public Optional<QuizDao> getquiz(@PathVariable String subject, @PathVariable String level) {
+    public Optional<QuizDao> getquiz(@PathVariable String subject, @PathVariable Integer level) {
         return quizService.getquiz(subject, level);
     }
 

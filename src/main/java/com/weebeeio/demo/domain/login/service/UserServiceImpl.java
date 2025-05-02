@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
                 .name(requestDto.getName())
                 .gender(requestDto.getGender())
                 .age(requestDto.getAge())
+                .userrank((requestDto.getUserRank()))
                 .userSegment(requestDto.getUserSegment())
                 .build();
 
@@ -69,6 +70,7 @@ public class UserServiceImpl implements UserService {
                 .name(requestDto.getName())
                 .gender(requestDto.getGender())
                 .age(requestDto.getAge())
+                .userrank((requestDto.getUserRank()))
                 .userSegment(requestDto.getUserSegment())
                 .build();
 
