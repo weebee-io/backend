@@ -9,38 +9,32 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <h2 class="text-center mb-4">맞춤형 금융 상품 추천</h2>
-
-            <!-- 주식 상품 추천 -->
+            
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">추천 주식 상품</h4>
+                    <h4 class="mb-0">사용자 정보</h4>
                 </div>
                 <div class="card-body">
-                    <div th:each="stock : ${recommendations.stockRecommendations}" class="mb-3 p-3 border rounded">
-                        <h5 th:text="${stock.stockName}" class="text-primary"></h5>
-                        <p class="mb-2"><strong>상품 번호:</strong> <span th:text="${stock.stockNo}"></span></p>
-                        <p class="mb-2"><strong>난이도:</strong> <span th:text="${stock.stockRank}"></span></p>
-                        <p class="mb-2"><strong>상세 설명:</strong> <span th:text="${stock.stockDetail}"></span></p>
-                        <div th:if="${stock.stockUrl != null and !stock.stockUrl.isEmpty()}" class="mt-2">
-                            <a th:href="${stock.stockUrl}" target="_blank" class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-link-45deg"></i> 상세 정보 보기
-                            </a>
-                        </div>
-                    </div>
+                    <p><strong>사용자 ID:</strong> <span th:text="${recommendations.userId}"></span></p>
+                    <p><strong>사용자 랭크:</strong> <span th:text="${recommendations.userRank}"></span></p>
                 </div>
             </div>
 
-            <!-- 예적금 상품 추천 -->
             <div class="card mb-4">
                 <div class="card-header bg-success text-white">
-                    <h4 class="mb-0">추천 예적금 상품</h4>
+                    <h4 class="mb-0">추천 금융 상품</h4>
                 </div>
                 <div class="card-body">
-                    <div th:each="deposit : ${recommendations.depositRecommendations}" class="mb-3 p-3 border rounded">
-                        <h5 th:text="${deposit.depositName}" class="text-success"></h5>
-                        <p class="mb-2"><strong>상품 번호:</strong> <span th:text="${deposit.depositNo}"></span></p>
-                        <p class="mb-2"><strong>난이도:</strong> <span th:text="${deposit.depositRank}"></span></p>
-                        <p class="mb-0"><strong>상세 설명:</strong> <span th:text="${deposit.depositDetail}"></span></p>
+                    <div th:each="product : ${recommendations.recommendedProducts}" class="mb-3 p-3 border rounded">
+                        <h5 th:text="${product.productName}" class="text-primary"></h5>
+                        <p class="mb-2"><strong>상품 번호:</strong> <span th:text="${product.productId}"></span></p>
+                        <p class="mb-2"><strong>난이도:</strong> <span th:text="${product.productRank}"></span></p>
+                        <p class="mb-2"><strong>상세 설명:</strong> <span th:text="${product.productDetail}"></span></p>
+                        <div th:if="${product.productUrl != null and !product.productUrl.isEmpty()}" class="mt-2">
+                            <a th:href="${product.productUrl}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-link-45deg"></i> 상세 정보 보기
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
