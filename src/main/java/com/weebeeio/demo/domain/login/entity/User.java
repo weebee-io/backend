@@ -38,6 +38,9 @@ public class User {
     @Column(length = 45)
     private String gender;
 
+    @Column(name = "user_rank", nullable = false)
+    private String userrank;
+
     @Column
     private Integer age;
 
