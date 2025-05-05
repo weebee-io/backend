@@ -1,10 +1,15 @@
 package com.weebeeio.demo.domain.login.entity;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import com.weebeeio.demo.domain.quiz.dao.QuizResultDao;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * 사용자 엔티티
@@ -15,7 +20,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,8 +29,8 @@ public class User {
 
     @Column(nullable = false, length = 45, unique = true)
     private String id;
-
-    @Column(nullable = false, length = 45)
+    
+    @Column(name = "password", length = 100, nullable = false)
     private String password;
 
     @Column(length = 45, unique = true)
@@ -77,5 +82,36 @@ public class User {
      */
     public void setLastAttend(LocalDate lastAttend) {
         this.lastAttend = lastAttend;
+    }
+
+    // UserDetails 인터페이스 구현
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.id;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
