@@ -19,7 +19,6 @@ public class QuizResultDao {       // 결과 고유 ID
     @Column(name = "quizResult_id")
     private Integer quizResultId;
 
-
     @Column(name = "is_correct", nullable = false)
     private Boolean isCorrect;       // 정답 여부
 
@@ -34,6 +33,4 @@ public class QuizResultDao {       // 결과 고유 ID
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore 
     private User user;  // User 엔티티와의 관계
-
-
 }
