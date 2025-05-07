@@ -1,7 +1,5 @@
 package com.weebeeio.demo.domain.stats.controller;
 
-
-import com.weebeeio.demo.domain.login.dto.CommonResponseDto;
 import com.weebeeio.demo.domain.login.entity.User;
 import com.weebeeio.demo.domain.login.service.UserService;
 import com.weebeeio.demo.domain.stats.dao.StatsDao;
@@ -17,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @Tag(name = "Stats", description = "사용자 스탯")
@@ -28,6 +26,7 @@ public class StatsController {
 
     @Autowired
     private final StatsService statsService;
+    private final UserService userService;
 
 
 
@@ -42,8 +41,8 @@ public class StatsController {
     @GetMapping("/create/{userId}")
     @Operation(summary = "회원 스탯 초기화", description = "회원 스탯을 초기화합니다.")
     public ResponseEntity<Void> statsInit(@PathVariable Integer userId) {
-        // 사용자 조회
-        User user = UserService.getUserInfo(userId);
+        // 사용자 조회 (인스턴스 메서드 호출)
+        User user = userService.getUserInfo(userId);
 
         // 스탯 초기값 세팅
         StatsDao stats = new StatsDao();
@@ -51,14 +50,13 @@ public class StatsController {
         stats.setInvestStat(0);
         stats.setCreditStat(0);
         stats.setFiStat(0);
-        stats.setStatSum(0);
+        // statSum은 @PrePersist에 의해 자동 계산됨
 
         // 저장
         statsService.save(stats);
 
         return ResponseEntity.ok().build();
     }
-    
 
 
 
