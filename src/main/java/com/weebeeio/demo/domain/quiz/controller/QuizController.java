@@ -1,6 +1,7 @@
 package com.weebeeio.demo.domain.quiz.controller;
 
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import com.weebeeio.demo.domain.stats.dao.StatsDao;
@@ -18,12 +19,14 @@ import com.weebeeio.demo.domain.quiz.service.QuizService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.ResponseBody;
 
 
 @Tag(name = "퀴즈 API", description = "퀴즈 테스트를 진행하는 API")
 @Controller("/quiz")
+@RequiredArgsConstructor
 public class QuizController {
 
 
@@ -52,37 +55,51 @@ public class QuizController {
     @ResponseBody
     @Operation(summary = "퀴즈 정답 확인", description = "퀴즈 정답을 확인합니다.")
     @GetMapping("/iscorrect/{user_id}/{quiz_id}/{answer}")
-    public String grading(@PathVariable Integer user_id,@PathVariable Integer quiz_id, @PathVariable String answer) {
-        
-        Optional<QuizDao> quiz = quizService.findquizbyid(quiz_id);
-        Optional<QuizResultDao> quizResult = quizResultService.findResultbyIdandQuizid(user_id,quiz_id);
-        Optional<StatsDao> stats = statsService.getStatsById(user_id);
-
-        String quizcorrect = quiz.get().getQuizAnswer();
-
-        if (answer.equals(quizcorrect)){
-            boolean iscorrect = true;
-            quizResult.get().setIsCorrect(iscorrect);
-            String subject = quiz.get().getSubject();
-            switch (subject) {
+    public String grading(
+            @PathVariable Integer user_id,
+            @PathVariable Integer quiz_id,
+            @PathVariable String answer) {
+    
+        // 1) 퀴즈와 통계(및 유저) 조회
+        QuizDao quiz = quizService.findquizbyid(quiz_id)
+                             .orElseThrow(() -> new NoSuchElementException("퀴즈가 없습니다."));
+        StatsDao stats = statsService.getStatsById(user_id)
+                             .orElseThrow(() -> new NoSuchElementException("사용자 스탯이이 없습니다.")); // StatsDao에 @ManyToOne User 매핑이 있다고 가정
+    
+        // 2) 기존 결과가 있으면 가져오고, 없으면 새로 생성
+        QuizResultDao result = quizResultService
+            .findResultbyIdandQuizid(user_id, quiz_id)
+            .orElseGet(() -> {
+                QuizResultDao newResult = new QuizResultDao();
+                newResult.setQuizId(quiz);  // QuizDao 타입 필드 세팅                // User 엔티티 세팅
+                return newResult;
+            });
+    
+        // 3) 정답 여부 판단 및 저장
+        boolean isCorrect = answer.equals(quiz.getQuizAnswer());
+        result.setIsCorrect(isCorrect);
+        quizResultService.save(result);
+    
+        // 4) 정답일 때만 통계 업데이트
+        if (isCorrect) {
+            switch (quiz.getSubject()) {
                 case "재태크":
-                   stats.get().setInvestStat(stats.get().getInvestStat()+quiz.get().getQuizLevel());
+                    stats.setInvestStat(stats.getInvestStat() + quiz.getQuizLevel());
                     break;
                 case "신용/소비":
-                    stats.get().setCreditStat(stats.get().getCreditStat()+quiz.get().getQuizLevel());
+                    stats.setCreditStat(stats.getCreditStat() + quiz.getQuizLevel());
                     break;
                 case "금융상식":
-                    stats.get().setFiStat(stats.get().getFiStat()+quiz.get().getQuizLevel());
+                    stats.setFiStat(stats.getFiStat() + quiz.getQuizLevel());
                     break;
             }
-            quizResultService.save(quizResult);
-            statsService.save(stats.get());
+            statsService.save(stats);
             return "정답";
+        } else {
+            return "오답";
         }
-        return "오답";
-        
     }
-
+    
 
     @ResponseBody
     @Operation(summary = "퀴즈 푼 현황", description = "유저가 현재 푼 퀴즈 현황")

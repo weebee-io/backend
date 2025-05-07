@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Tag(name = "Stats", description = "사용자 스탯")
 @RestController
@@ -27,12 +29,36 @@ public class StatsController {
     @Autowired
     private final StatsService statsService;
 
+
+
     @GetMapping("/{userId}")
     @Operation(summary = "회원 스탯 조회", description = "회원 스탯을 조회합니다.")
     public Optional<StatsDao> getUserStats(@PathVariable Integer userId){
         return statsService.getStatsById(userId);
 
     }
+
+
+    @GetMapping("/create/{userId}")
+    @Operation(summary = "회원 스탯 초기화", description = "회원 스탯을 초기화합니다.")
+    public ResponseEntity<Void> statsInit(@PathVariable Integer userId) {
+        // 사용자 조회
+        User user = UserService.getUserInfo(userId);
+
+        // 스탯 초기값 세팅
+        StatsDao stats = new StatsDao();
+        stats.setUser(user);
+        stats.setInvestStat(0);
+        stats.setCreditStat(0);
+        stats.setFiStat(0);
+        stats.setStatSum(0);
+
+        // 저장
+        statsService.save(stats);
+
+        return ResponseEntity.ok().build();
+    }
+    
 
 
 
