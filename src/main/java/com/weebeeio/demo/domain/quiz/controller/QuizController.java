@@ -7,6 +7,8 @@ import java.util.Optional;
 import com.weebeeio.demo.domain.stats.dao.StatsDao;
 import com.weebeeio.demo.domain.stats.service.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +24,28 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.ResponseBody;
+
+
+
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+import lombok.RequiredArgsConstructor;
+
+import com.weebeeio.demo.domain.login.entity.User;
+import com.weebeeio.demo.domain.quiz.dao.QuizResultDao;
+import com.weebeeio.demo.domain.quiz.service.QuizResultService;
+import com.weebeeio.demo.domain.quiz.service.QuizService;
+import com.weebeeio.demo.domain.stats.service.StatsService;
 
 
 @Tag(name = "퀴즈 API", description = "퀴즈 테스트를 진행하는 API")
@@ -54,13 +78,17 @@ public class QuizController {
 
     @ResponseBody
     @Operation(summary = "퀴즈 정답 확인", description = "퀴즈 정답을 확인합니다.")
-    @GetMapping("/iscorrect/{user_id}/{quiz_id}/{answer}")
+    @GetMapping("/iscorrect/{quiz_id}/{answer}")
     public String grading(
-            @PathVariable Integer user_id,
             @PathVariable Integer quiz_id,
             @PathVariable String answer) {
     
-        // 1) 퀴즈와 통계(및 유저) 조회
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal(); 
+        Integer user_id = user.getUserId();       
+
+
+        // 1) 퀴즈와 통계(및 유저) 조회ㄴ
         QuizDao quiz = quizService.findquizbyid(quiz_id)
                              .orElseThrow(() -> new NoSuchElementException("퀴즈가 없습니다."));
         StatsDao stats = statsService.getStatsById(user_id)
@@ -72,6 +100,7 @@ public class QuizController {
             .orElseGet(() -> {
                 QuizResultDao newResult = new QuizResultDao();
                 newResult.setQuizId(quiz);  // QuizDao 타입 필드 세팅                // User 엔티티 세팅
+                newResult.setUser(user);
                 return newResult;
             });
     
@@ -101,13 +130,23 @@ public class QuizController {
     }
     
 
-    @ResponseBody
-    @Operation(summary = "퀴즈 푼 현황", description = "유저가 현재 푼 퀴즈 현황")
-    @GetMapping("/checkResult/{user_id}")
-    public Optional<QuizResultDao> checkResult(@PathVariable Integer user_id) {
-        return quizResultService.findResultbyid(user_id);
+
+    @Operation(summary = "퀴즈 푼 현황", description = "로그인한 유저가 푼 퀴즈 현황을 조회합니다.")
+    @GetMapping("/checkResult")
+    public ResponseEntity<List<QuizResultDao>> checkResult() {
+        // 1) SecurityContext에서 현재 로그인한 User 꺼내기
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+
+        Integer userId = user.getUserId();
+
+        // 2) 서비스 호출하여 해당 유저의 모든 QuizResult 조회
+        List<QuizResultDao> results = 
+            quizResultService.findAllByUserId(userId);
+
+        // 3) 결과 반환
+        return ResponseEntity.ok(results);
     }
-    
     
 
 }

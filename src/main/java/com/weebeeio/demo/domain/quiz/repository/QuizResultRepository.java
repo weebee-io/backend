@@ -17,4 +17,8 @@ public interface QuizResultRepository extends JpaRepository<QuizResultDao, Integ
 
     Optional<QuizResultDao> findByUserUserIdAndQuizIdQuizId(Integer userId, Integer quizId);
 
+
+
+    List<QuizResultDao> findAllByUser_UserId(Integer userId);
+
 }

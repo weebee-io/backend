@@ -45,7 +45,9 @@ public class QuizResultService {
 
 
 
-
+    public List<QuizResultDao> findAllByUserId(Integer userId) {
+        return quizResultRepository.findAllByUser_UserId(userId);
+    }
 
 
 
