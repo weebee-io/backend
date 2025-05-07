@@ -33,8 +33,8 @@ public class QuizResultService {
     }
 
 
-    public void save(Optional<QuizResultDao> quizResult) {
-        quizResultRepository.save(quizResult.get());
+    public void save(QuizResultDao quizResult) {
+        quizResultRepository.save(quizResult);
         
     }
 

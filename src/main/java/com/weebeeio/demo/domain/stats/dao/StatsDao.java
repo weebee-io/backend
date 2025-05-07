@@ -30,5 +30,14 @@ public class StatsDao {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
-    private User user;;
+    private User user;
+
+    @PrePersist
+    @PreUpdate
+    private void calculateSum() {
+        int sum = (investStat != null ? investStat : 0)
+                + (creditStat  != null ? creditStat  : 0)
+                + (fiStat      != null ? fiStat      : 0);
+        this.statSum = sum;
+    }
 }
