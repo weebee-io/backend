@@ -50,6 +50,7 @@ public class SecurityConfig {
                     "/users/check-id/**"
                 ).permitAll()
                 // 그 외 모든 요청은 인증 필요
+                .requestMatchers("/api/domain/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
@@ -57,7 +58,7 @@ public class SecurityConfig {
             )
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
+            
         return http.build();
     }
 

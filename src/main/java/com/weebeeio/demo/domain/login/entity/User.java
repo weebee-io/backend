@@ -9,7 +9,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 
 /**
  * 사용자 엔티티
@@ -85,33 +85,40 @@ public class User implements UserDetails {
     }
 
     // UserDetails 인터페이스 구현
-    @Override
+    @Override // 권한 반환
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority("user"));
     }
 
-    @Override
+    @Override  // 유저 id 반환환
     public String getUsername() {
         return this.id;
     }
 
-    @Override
+    @Override  // 유저 패스워드 반환환
+    public String getPassword() {
+        return password;
+    }
+
+    @Override  //계정 만료 여부 반환환
     public boolean isAccountNonExpired() {
         return true;
     }
 
-    @Override
+    @Override // 계정 잠금 여부 반환환
     public boolean isAccountNonLocked() {
         return true;
     }
 
-    @Override
+    @Override // 패스워드의 만료 여부 반환환
     public boolean isCredentialsNonExpired() {
-        return true;
+        // 패스워드가 만료 되었는지 확인하는 로직
+        return true; // true -> 만료되지 않음.
     }
 
-    @Override
+    @Override // 계정 사용 가능 여부 반환환
     public boolean isEnabled() {
-        return true;
+        // 계정 사용 가능한지 확인하는 로직직
+        return true; // ture -> 사용 가능
     }
 }
