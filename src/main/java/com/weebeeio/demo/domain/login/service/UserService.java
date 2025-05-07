@@ -12,10 +12,7 @@ public interface UserService {
     String login(UserLoginRequestDto requestDto);
     
     // 회원 정보 조회
-    static User getUserInfo(Integer userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUserInfo'");
-    }
+    User getUserInfo(Integer userId);
     
     // 회원 정보 수정
     User updateUserInfo(Integer userId, UserSignupRequestDto requestDto);
