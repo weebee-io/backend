@@ -72,35 +72,4 @@ public class SurveyService {
             /* 예측 결과 */ null
         );
     }
-
-    /**
-     * 이미 제출된 설문을 조회할 때 호출하는 메서드
-     *
-     * @param userId  조회할 사용자 PK
-     * @return        해당 사용자의 설문 응답 및 세그먼트 DTO
-     * @throws IllegalStateException   설문이 존재하지 않는 경우
-     */
-    @Transactional(readOnly = true)
-    public SurveyResponse getSurvey(Integer userId) {
-        // 1) Survey 조회 (없으면 예외)
-        Survey survey = surveyRepository.findByUserId(userId)
-            .orElseThrow(() -> new IllegalStateException("제출된 설문이 없습니다."));
-        
-        // 2) User 엔티티에서 세그먼트 정보 조회
-        User user = survey.getUser();
-
-        // 3) DTO로 변환하여 반환
-        return new SurveyResponse(
-            survey.getUserId(),
-            survey.getAssetType(),
-            survey.getInvestResource(),
-            survey.getCreditScore(),
-            survey.getDelinquentCount(),
-            survey.getDebtRatio(),
-            survey.getConsumptionScore(),
-            survey.getDigitalFriendly(),
-            survey.getFinKnowScore(),
-            user.getUserSegment()  // 현재는 null일 수 있음
-        );
-    }
 }
