@@ -11,11 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 
 /**
  * 설문조사 관련 REST API를 제공하는 컨트롤러
  */
-@Tag(name = "설문조사")
+@Tag(name = "Survey",description = "설문 조사 API")
 @RestController
 @RequestMapping("/surveys")
 @RequiredArgsConstructor
@@ -36,6 +37,10 @@ public class SurveyController {
     public SurveyResponse submit(
         @Validated @RequestBody SurveyRequest req,
         @AuthenticationPrincipal User principal) {
+        
+        if (principal == null) {
+            throw new AuthenticationCredentialsNotFoundException("로그인이 필요합니다.");
+        }
         
         // 서비스 호출 후 DTO 반환
         return surveyService.submitSurvey(principal.getUserId(), req);

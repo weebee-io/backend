@@ -72,4 +72,9 @@ public class SurveyService {
             /* 예측 결과 */ null
         );
     }
+
+    @Transactional(readOnly = true)
+    public boolean isSubmitted(Integer userId) {
+        return surveyRepository.existsByUserId(userId);
+    }
 }
