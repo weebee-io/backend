@@ -40,19 +40,4 @@ public class SurveyController {
         // 서비스 호출 후 DTO 반환
         return surveyService.submitSurvey(principal.getUserId(), req);
     }
-
-    /**
-     * 현재 로그인한 사용자가 제출한 설문을 조회하는 엔드포인트
-     *
-     * @param principal  인증된 사용자 정보
-     * @return           해당 사용자의 설문 응답 및 세그먼트 DTO
-     */
-    @Operation(summary = "내 설문 조회")
-    @GetMapping
-    public SurveyResponse getMySurvey(
-        @AuthenticationPrincipal User principal) {
-        
-        // 서비스 호출 후 DTO 반환
-        return surveyService.getSurvey(principal.getUserId());
-    }
 }
