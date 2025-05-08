@@ -19,11 +19,12 @@ import com.weebeeio.demo.domain.stats.dao.StatsDao;
 import com.weebeeio.demo.domain.stats.service.StatsService;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,9 +35,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class QuizController {
 
-    private QuizService quizService;
-    private QuizResultService quizResultService;
-    private StatsService statsService;
+    private final QuizService quizService;
+    private final QuizResultService quizResultService;
+    private final StatsService statsService;
 
 
     @ResponseBody
@@ -102,20 +103,11 @@ public class QuizController {
     
 
 
-    @Operation(summary = "퀴즈 푼 현황", description = "로그인한 유저가 푼 퀴즈 현황을 조회합니다.")
     @GetMapping("/checkResult")
-    public ResponseEntity<List<QuizResultDao>> checkResult() {
-        // 1) SecurityContext에서 현재 로그인한 User 꺼내기
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
-
+    public ResponseEntity<List<QuizResultDao>> checkResult(
+            @AuthenticationPrincipal User user /* 또는 UserDetails */) {
         Integer userId = user.getUserId();
-
-        // 2) 서비스 호출하여 해당 유저의 모든 QuizResult 조회
-        List<QuizResultDao> results = 
-            quizResultService.findAllByUserId(userId);
-
-        // 3) 결과 반환
+        List<QuizResultDao> results = quizResultService.findAllByUserId(userId);
         return ResponseEntity.ok(results);
     }
     
