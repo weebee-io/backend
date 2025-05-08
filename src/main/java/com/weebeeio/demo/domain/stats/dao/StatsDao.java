@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import com.weebeeio.demo.domain.login.entity.User;
+import com.weebeeio.demo.domain.stats.dao.WeebeeLevel;
 
 @Data
 @Entity
@@ -39,5 +40,9 @@ public class StatsDao {
                 + (creditStat  != null ? creditStat  : 0)
                 + (fiStat      != null ? fiStat      : 0);
         this.statSum = sum;
+    }
+
+    public String getWeebeeImageName() {
+        return WeebeeLevel.fromStatSum(statSum).getImageName();
     }
 }

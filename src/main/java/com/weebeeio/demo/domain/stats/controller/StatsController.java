@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 import java.util.List;
-
+import java.util.Map;
 
 @Tag(name = "Stats", description = "사용자 스탯")
 @RestController
@@ -27,19 +27,26 @@ public class StatsController {
     @Autowired
     private final StatsService statsService;
 
-
-
     @GetMapping("/{userId}")
     @Operation(summary = "회원 스탯 조회", description = "회원 스탯을 조회합니다.")
     public Optional<StatsDao> getUserStats(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         
-
         return statsService.getStatsById(user.getUserId());
-
     }
 
+    @GetMapping("/weebee-image")
+    @Operation(summary = "회원의 Weebee 이미지 조회", description = "회원의 금융스텟 총합에 따른 Weebee 이미지 이름을 조회합니다.")
+    public ResponseEntity<Map<String, String>> getWeebeeImage() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+        
+        StatsDao stats = statsService.getStatsById(user.getUserId())
+            .orElseThrow(() -> new IllegalStateException("사용자 스탯이 없습니다."));
+        
+        return ResponseEntity.ok(Map.of("imageName", stats.getWeebeeImageName()));
+    }
 
     @Operation(summary = "회원 스탯 초기화", description = "회원 스탯을 초기화합니다.")
     @GetMapping("/statsInit")
@@ -48,7 +55,6 @@ public class StatsController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         
-
         StatsDao stats = new StatsDao();
         stats.setUser(user);
         stats.setInvestStat(0);
@@ -60,10 +66,5 @@ public class StatsController {
         statsService.save(stats);
 
         return ResponseEntity.ok().build();
-
     }
-    
-
-
-
 }
