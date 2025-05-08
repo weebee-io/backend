@@ -19,6 +19,7 @@ public class JwtConfig {
         "/users/signup",
         "/users/login",
         "/users/check-id",
+        "/quiz/admin/upload",        
         "/swagger-ui",
         "/swagger-ui/",
         "/swagger-ui.html",

@@ -37,4 +37,13 @@ public class QuizService {
     }
 
 
+
+
+
+    public void save(QuizDao quiz) {
+        // TODO Auto-generated method stub
+        quizRepository.save(quiz);
+    }
+
+
 }

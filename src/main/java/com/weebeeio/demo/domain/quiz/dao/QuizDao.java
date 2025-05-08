@@ -2,6 +2,9 @@ package com.weebeeio.demo.domain.quiz.dao;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
+
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Data
@@ -13,6 +16,9 @@ public class QuizDao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "quiz_id")
     private Integer quizId;          // 퀴즈 고유 ID
+
+    @Column(name = "content", nullable = false, columnDefinition="TEXT")
+    private String quizcontent;
 
     @Column(name = "subject", nullable = false)
     private String subject;          // 퀴즈 주제
