@@ -27,7 +27,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final List<String> EXCLUDE_URLS = List.of(
         "/users/signup",
         "/users/login",
-        "/users/check-id"
+        "/users/check-id",
+        "/quiz/admin/upload"
     );
 
     @Override
@@ -62,6 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             || path.startsWith("/users/signup")
             || path.startsWith("/users/login")
             || path.startsWith("/users/check-id")
+            || path.startsWith("/quiz/admin/upload")
             || path.startsWith("/swagger-ui")
             || path.startsWith("/v3/api-docs")
             || path.startsWith("/webjars");

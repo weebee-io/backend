@@ -5,6 +5,7 @@ import com.weebeeio.demo.global.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -47,7 +48,8 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/users/signup",
                     "/users/login",
-                    "/users/check-id/**"
+                    "/users/check-id/**",
+                    "/quiz/admin/upload"
                 ).permitAll()
                 // 그 외 모든 요청은 인증 필요
                 .requestMatchers("/api/domain/**").permitAll()
