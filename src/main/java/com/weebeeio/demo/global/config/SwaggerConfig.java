@@ -39,6 +39,7 @@ public class SwaggerConfig {
             // 회원가입·로그인·아이디체크 경로는 보안 스킴 제거
             if ("/users/signup".equals(path)
                 || "/users/login".equals(path)
+                || "/quiz/admin/upload".equals(path)
                 || path.startsWith("/users/check-id")) {
 
                 pathItem.readOperations()

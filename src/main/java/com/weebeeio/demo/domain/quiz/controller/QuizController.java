@@ -19,6 +19,7 @@ import com.weebeeio.demo.domain.stats.dao.StatsDao;
 import com.weebeeio.demo.domain.stats.service.StatsService;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 @Tag(name = "퀴즈 API", description = "퀴즈 테스트를 진행하는 API")
-@RestController("/quiz")
+@RestController
+@RequestMapping("/quiz")
 @RequiredArgsConstructor
 public class QuizController {
 
@@ -43,15 +45,6 @@ public class QuizController {
     public Optional<QuizDao> getquiz(@PathVariable String subject, @PathVariable Integer level) {
         return quizService.getquiz(subject, level);
     }
-
-    
-
-
-
-
-
-
-
 
 
     @ResponseBody
@@ -126,7 +119,7 @@ public class QuizController {
         return ResponseEntity.ok(results);
     }
     
-    @Operation(summary = "운영자: 퀴즈 일괄 업로드", description = "텍스트 파일을 업로드하여 퀴즈를 일괄 등록합니다.")
+    @Operation(summary = "퀴즈 일괄 업로드", description = "텍스트 파일을 업로드하여 퀴즈를 일괄 등록합니다.")
     @PostMapping(path = "/admin/upload", consumes = "multipart/form-data")
     public ResponseEntity<String> uploadQuizFile(
             @RequestParam("file") MultipartFile file) {
