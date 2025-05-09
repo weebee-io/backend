@@ -102,6 +102,7 @@ public class UserServiceImpl implements UserService {
         throw new UnsupportedOperationException("Unimplemented method 'checkIdDuplicate'");
     }
 
+    @Transactional
     public void save(User user){
             userRepository.save(user);
         }

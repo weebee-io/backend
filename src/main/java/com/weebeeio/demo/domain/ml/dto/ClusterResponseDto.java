@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClusterResponseDto {
-    private String rank;
+    private int cluster;
+    private double proba;
     
 }
