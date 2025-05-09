@@ -2,6 +2,7 @@ package com.weebeeio.demo.domain.stats.controller;
 
 import com.weebeeio.demo.domain.login.entity.User;
 import com.weebeeio.demo.domain.stats.dao.StatsDao;
+import com.weebeeio.demo.domain.stats.dto.UserStatsResponseDto;
 import com.weebeeio.demo.domain.stats.service.StatsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,12 +10,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.NoSuchElementException;
 
-import java.util.Optional;
 import java.util.List;
 import java.util.Map;
 
@@ -27,13 +29,22 @@ public class StatsController {
     @Autowired
     private final StatsService statsService;
 
-    @GetMapping("/{userId}")
+    @GetMapping("/getuserstats")
     @Operation(summary = "회원 스탯 조회", description = "회원 스탯을 조회합니다.")
-    public Optional<StatsDao> getUserStats(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
-        
-        return statsService.getStatsById(user.getUserId());
+    public ResponseEntity<UserStatsResponseDto> getUserStats(
+            @AuthenticationPrincipal User user) {
+    
+        Integer userId   = user.getUserId();
+        String  userRank = user.getUserrank();
+    
+ 
+        StatsDao stats = statsService.getStatsById(userId)
+            .orElseThrow(() -> new NoSuchElementException("Stats를 찾을 수 없습니다. ID=" + userId));
+
+        UserStatsResponseDto dto = new UserStatsResponseDto(stats, userRank);
+    
+        // 200 OK로 응답
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/weebee-image")
