@@ -76,15 +76,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User updateUserInfo(Integer userId, UserSignupRequestDto requestDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateUserInfo'");
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException("존재하지 않는 회원입니다."));
+        user.setNickname(requestDto.getNickname());
+        user.setName(requestDto.getName());
+        user.setGender(requestDto.getGender());
+        user.setAge(requestDto.getAge());
+        user.setUserrank(requestDto.getUserRank());
+        return userRepository.save(user);
     }
 
     @Override
+    @Transactional
     public void deleteUser(Integer userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException("존재하지 않는 회원입니다."));
+        userRepository.delete(user);
     }
 
     @Override
