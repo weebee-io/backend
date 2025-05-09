@@ -19,6 +19,7 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
+    // application.yml에 설정된 값을 주입 받음
     @Value("${jwt.secret}")
     private String secretKey;
 
@@ -28,23 +29,28 @@ public class JwtUtil {
     @Value("${jwt.refresh-expiration}")
     private long refreshExpiration;
 
+    // 액세스 토큰인지, 리프레시 토큰인지 구분
     public enum TokenType {
         ACCESS, REFRESH
     }
 
+    // 토큰에서 사용자 이름 추출
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
+    // 토큰에서 클레임 추출
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
+    // 기본 액세스 토큰 생성
     public String generateAccessToken(Integer userId, String username) {
         return generateToken(userId, username, TokenType.ACCESS, new HashMap<>());
     }
 
+    // 기본 리프레시 토큰 생성
     public String generateRefreshToken(Integer userId, String username) {
         return generateToken(userId, username, TokenType.REFRESH, new HashMap<>());
     }
@@ -61,8 +67,7 @@ public class JwtUtil {
         long expiration = tokenType == TokenType.ACCESS ? jwtExpiration : refreshExpiration;
         
         return Jwts
-                .builder()
-                .setClaims(extraClaims)
+                .builder() 
                 .setSubject(username)
                 .claim("userId", userId)
                 .claim("tokenType", tokenType.name())
