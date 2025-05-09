@@ -8,7 +8,11 @@ import com.weebeeio.demo.domain.login.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Optional;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Login", description = "사용자 관리 API")
@@ -36,32 +40,32 @@ public class UserController {
     }
 
     /** 이하 보호된 API — JWT 토큰 필요 */
-    @GetMapping("/{userId}")
+    @GetMapping("/getUserinfo")
     @Operation(summary = "회원 정보 조회", description = "회원 정보를 조회한다.")
-    public ResponseEntity<CommonResponseDto<User>> getUserInfo(
-            @PathVariable Integer userId) {
-        User user = userService.getUserInfo(userId);
+    public ResponseEntity<CommonResponseDto<Optional<User>>> getUserInfo(
+        @AuthenticationPrincipal User user) {
+        Optional<User> users = userService.getUserInfo(user.getUserId());
         return ResponseEntity.ok(
-            CommonResponseDto.success(user, "회원 정보 조회가 완료되었다.")
+            CommonResponseDto.success(users, "회원 정보 조회가 완료되었다.")
         );
     }
 
-    @PutMapping("/{userId}")
+    @PutMapping("/updateUserInfo")
     @Operation(summary = "회원 정보 수정", description = "회원 정보를 수정한다.")
     public ResponseEntity<CommonResponseDto<User>> updateUserInfo(
-            @PathVariable Integer userId,
+        @AuthenticationPrincipal User user,
             @RequestBody UserSignupRequestDto requestDto) {
-        User user = userService.updateUserInfo(userId, requestDto);
+        User users = userService.updateUserInfo(user.getUserId(), requestDto);
         return ResponseEntity.ok(
-            CommonResponseDto.success(user, "회원 정보 수정이 완료되었다.")
+            CommonResponseDto.success(users, "회원 정보 수정이 완료되었다.")
         );
     }
 
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/deleteUser")
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 처리한다.")
     public ResponseEntity<CommonResponseDto<Void>> deleteUser(
-            @PathVariable Integer userId) {
-        userService.deleteUser(userId);
+        @AuthenticationPrincipal User user) {
+        userService.deleteUser(user.getUserId());
         return ResponseEntity.ok(
             CommonResponseDto.success(null, "회원 탈퇴가 완료되었다.")
         );

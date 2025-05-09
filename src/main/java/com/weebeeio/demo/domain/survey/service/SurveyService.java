@@ -7,6 +7,9 @@ import com.weebeeio.demo.domain.survey.repository.SurveyRepository;
 import com.weebeeio.demo.domain.login.entity.User;
 import com.weebeeio.demo.domain.login.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,5 +79,11 @@ public class SurveyService {
     @Transactional(readOnly = true)
     public boolean isSubmitted(Integer userId) {
         return surveyRepository.existsByUserId(userId);
+    }
+
+
+    public Optional<Survey> getsurveybyUserid(Integer userid) {
+        // TODO Auto-generated method stub
+        return surveyRepository.findById(userid);
     }
 }

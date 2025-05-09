@@ -2,11 +2,15 @@ package com.weebeeio.demo.domain.survey.controller;
 
 import com.weebeeio.demo.domain.survey.dto.SurveyRequest;
 import com.weebeeio.demo.domain.survey.dto.SurveyResponse;
+import com.weebeeio.demo.domain.survey.entity.Survey;
 import com.weebeeio.demo.domain.survey.service.SurveyService;
 import com.weebeeio.demo.domain.login.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -44,5 +48,16 @@ public class SurveyController {
         
         // 서비스 호출 후 DTO 반환
         return surveyService.submitSurvey(principal.getUserId(), req);
+    }
+
+
+
+    @Operation(summary = "설문 조회")
+    public Optional<Survey> getsurvey(@AuthenticationPrincipal User user){
+
+        Integer userid = user.getUserId();
+        
+    
+        return surveyService.getsurveybyUserid(userid);
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -47,9 +48,6 @@ public class User implements UserDetails {
 
     @Column
     private Integer age;
-
-    @Column(name = "user_segment", length = 45, nullable = true)
-    private String userSegment;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<QuizResultDao> quizResults;

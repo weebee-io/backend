@@ -1,10 +1,14 @@
 package com.weebeeio.demo.domain.login.service;
 
+import java.util.Optional;
+
 import com.weebeeio.demo.domain.login.dto.UserLoginRequestDto;
 import com.weebeeio.demo.domain.login.dto.UserSignupRequestDto;
 import com.weebeeio.demo.domain.login.entity.User;
 
+
 public interface UserService {
+    
     // 회원가입
     User signup(UserSignupRequestDto requestDto);
     
@@ -12,7 +16,7 @@ public interface UserService {
     String login(UserLoginRequestDto requestDto);
     
     // 회원 정보 조회
-    User getUserInfo(Integer userId);
+    Optional<User> getUserInfo(Integer userId);
     
     // 회원 정보 수정
     User updateUserInfo(Integer userId, UserSignupRequestDto requestDto);
@@ -22,4 +26,8 @@ public interface UserService {
     
     // 아이디 중복 확인
     boolean checkIdDuplicate(String id);
+
+    void save(User user);
+
+
 } 

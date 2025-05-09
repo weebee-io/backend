@@ -40,7 +40,6 @@ public class QuizController {
     private final StatsService statsService;
 
 
-    @ResponseBody
     @Operation(summary = "퀴즈 가져오기기", description = "과목, 레벨로 퀴즈를 가져옵니다.")
     @GetMapping("/generation/{subject}/{level}")
     public Optional<QuizDao> getquiz(@PathVariable String subject, @PathVariable Integer level) {
@@ -48,7 +47,6 @@ public class QuizController {
     }
 
 
-    @ResponseBody
     @Operation(summary = "퀴즈 정답 확인", description = "퀴즈 정답을 확인합니다.")
     @GetMapping("/iscorrect/{quiz_id}/{answer}")
     public String grading(
@@ -102,7 +100,7 @@ public class QuizController {
     }
     
 
-
+    @Operation(summary = "현재까지 푼 문제 확인", description = "어떤 문제들을 시도했는지 봐요!")
     @GetMapping("/checkResult")
     public ResponseEntity<List<QuizResultDao>> checkResult(
             @AuthenticationPrincipal User user /* 또는 UserDetails */) {

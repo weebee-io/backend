@@ -9,6 +9,9 @@ import com.weebeeio.demo.global.util.JwtUtil;
 
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.Optional;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +45,6 @@ public class UserServiceImpl implements UserService {
                     .gender(requestDto.getGender())
                     .age(requestDto.getAge())
                     .userrank((requestDto.getUserRank()))
-                    .userSegment(requestDto.getUserSegment())
                     .build();
 
             return userRepository.save(user);
@@ -68,9 +70,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserInfo(Integer userId) {
+    public Optional getUserInfo(Integer userId) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUserInfo'");
+        return userRepository.findById(userId);
     }
 
     @Override
@@ -90,4 +92,8 @@ public class UserServiceImpl implements UserService {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'checkIdDuplicate'");
     }
+
+    public void save(User user){
+            userRepository.save(user);
+        }
 }
