@@ -23,27 +23,24 @@ public class QuestController {
 
     /**
 
-     * <p>퀘스트 화면에서 ‘출석하기’ 버튼을 누르면 API를 호출</p>
+     * <p>퀘스트 화면에서 '출석하기' 버튼을 누르면 API를 호출</p>
      * <ul>
      *   <li>첫 호출 시: 코인 50개 지급 후 완료 메시지 반환</li>
      *   <li>재호출 시: 이미 오늘 출석했음을 알려주는 메시지 반환</li>
      * </ul>
      *
-     * @param userId 사용자 식별자(PK)
+     * @param user 인증된 사용자 정보
      * @return 처리 결과 문자열
      */
     @Operation(summary = "출석 처리", 
                description = "오늘의 출석 완료 시 코인 50개를 지급")
     @ApiResponses({
       @ApiResponse(responseCode = "200", description = "성공적으로 처리됨"),
-      @ApiResponse(responseCode = "400", description = "잘못된 userId 입력")
+      @ApiResponse(responseCode = "400", description = "잘못된 인증 또는 로그인 정보")
     })
     @PostMapping("/attend")
-    public ResponseEntity<String> attend(
-        @Parameter(description = "사용자 ID", required = true)
-        @RequestParam Integer userId) {
-
-        int coin = questService.attend(userId);
+    public ResponseEntity<String> attend(@org.springframework.security.core.annotation.AuthenticationPrincipal com.weebeeio.demo.domain.login.entity.User user) {
+        int coin = questService.attend(user.getUserId());
         if (coin == 0) {
             return ResponseEntity.ok("이미 오늘 출석을 완료하셨습니다.");
         }

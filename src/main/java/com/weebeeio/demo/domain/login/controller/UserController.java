@@ -46,7 +46,7 @@ public class UserController {
         @AuthenticationPrincipal User user) {
         Optional<User> users = userService.getUserInfo(user.getUserId());
         return ResponseEntity.ok(
-            CommonResponseDto.success(users, "회원 정보 조회가 완료되었다.")
+            CommonResponseDto.success(users, "회원 정보 조회가 완료되었습니다.")
         );
     }
 
@@ -57,7 +57,7 @@ public class UserController {
             @RequestBody UserSignupRequestDto requestDto) {
         User users = userService.updateUserInfo(user.getUserId(), requestDto);
         return ResponseEntity.ok(
-            CommonResponseDto.success(users, "회원 정보 수정이 완료되었다.")
+            CommonResponseDto.success(users, "회원 정보 수정이 완료되었습니다.")
         );
     }
 
@@ -67,7 +67,7 @@ public class UserController {
         @AuthenticationPrincipal User user) {
         userService.deleteUser(user.getUserId());
         return ResponseEntity.ok(
-            CommonResponseDto.success(null, "회원 탈퇴가 완료되었다.")
+            CommonResponseDto.success(null, "회원 탈퇴가 완료되었습니다.")
         );
     }
 
@@ -79,7 +79,7 @@ public class UserController {
         return ResponseEntity.ok(
             CommonResponseDto.success(
                 isDuplicate,
-                isDuplicate ? "이미 사용 중인 아이디이다." : "사용 가능한 아이디이다."
+                isDuplicate ? "이미 사용 중인 아이디입니다." : "사용 가능한 아이디입니다."
             )
         );
     }
