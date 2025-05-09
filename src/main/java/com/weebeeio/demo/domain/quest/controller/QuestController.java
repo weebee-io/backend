@@ -1,13 +1,15 @@
 package com.weebeeio.demo.domain.quest.controller;
 
 import com.weebeeio.demo.domain.quest.service.QuestService;
+import com.weebeeio.demo.domain.login.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -29,7 +31,6 @@ public class QuestController {
      *   <li>재호출 시: 이미 오늘 출석했음을 알려주는 메시지 반환</li>
      * </ul>
      *
-     * @param user 인증된 사용자 정보
      * @return 처리 결과 문자열
      */
     @Operation(summary = "출석 처리", 
@@ -39,7 +40,11 @@ public class QuestController {
       @ApiResponse(responseCode = "400", description = "잘못된 인증 또는 로그인 정보")
     })
     @PostMapping("/attend")
-    public ResponseEntity<String> attend(@org.springframework.security.core.annotation.AuthenticationPrincipal com.weebeeio.demo.domain.login.entity.User user) {
+    public ResponseEntity<String> attend() {
+        // 1) SecurityContext에서 현재 로그인한 User 꺼내기
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+        
         int coin = questService.attend(user.getUserId());
         if (coin == 0) {
             return ResponseEntity.ok("이미 오늘 출석을 완료하셨습니다.");

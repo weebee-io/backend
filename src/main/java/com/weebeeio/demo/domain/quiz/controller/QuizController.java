@@ -40,7 +40,7 @@ public class QuizController {
     private final StatsService statsService;
 
 
-    @Operation(summary = "퀴즈 가져오기기", description = "과목, 레벨로 퀴즈를 가져옵니다.")
+    @Operation(summary = "퀴즈 가져오기", description = "과목, 레벨로 퀴즈를 가져옵니다.")
     @GetMapping("/generation/{subject}/{level}")
     public Optional<QuizDao> getquiz(@PathVariable String subject, @PathVariable Integer level) {
         return quizService.getquiz(subject, level);
@@ -62,7 +62,7 @@ public class QuizController {
         QuizDao quiz = quizService.findquizbyid(quiz_id)
                              .orElseThrow(() -> new NoSuchElementException("퀴즈가 없습니다."));
         StatsDao stats = statsService.getStatsById(user_id)
-                             .orElseThrow(() -> new NoSuchElementException("사용자 스탯이이 없습니다.")); // StatsDao에 @ManyToOne User 매핑이 있다고 가정
+                             .orElseThrow(() -> new NoSuchElementException("사용자 스탯이 없습니다.")); // StatsDao에 @ManyToOne User 매핑이 있다고 가정
     
         // 2) 기존 결과가 있으면 가져오고, 없으면 새로 생성
         QuizResultDao result = quizResultService
