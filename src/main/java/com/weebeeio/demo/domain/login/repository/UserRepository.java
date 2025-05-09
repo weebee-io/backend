@@ -10,5 +10,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     
     boolean existsById(String id);
 
-
+    boolean existsByNickname(String nickname);
 }

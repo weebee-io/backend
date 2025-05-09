@@ -80,11 +80,20 @@ public class UserServiceImpl implements UserService {
     public User updateUserInfo(Integer userId, UserSignupRequestDto requestDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException("존재하지 않는 회원입니다."));
-        user.setNickname(requestDto.getNickname());
+        if (requestDto.getPassword() != null && !requestDto.getPassword().isEmpty()) {
+            // 기존 비밀번호 삭제 및 새로운 비밀번호로 업데이트
+            user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
+        }
+        if (requestDto.getNickname() != null) {
+            // 닉네임 중복 검사
+            if (userRepository.existsByNickname(requestDto.getNickname())) {
+                throw new UserException("이미 존재하는 닉네임입니다.");
+            }
+            user.setNickname(requestDto.getNickname());
+        }
         user.setName(requestDto.getName());
         user.setGender(requestDto.getGender());
         user.setAge(requestDto.getAge());
-        user.setUserrank(requestDto.getUserRank());
         return userRepository.save(user);
     }
 
