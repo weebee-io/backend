@@ -1,5 +1,6 @@
 package com.weebeeio.demo.domain.quiz.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class QuizService {
 
 
     //수정정
-    public Optional<QuizDao> getquiz(String subject, Integer level) {
+    public List<QuizDao> getquiz(String subject, Integer level) {
         
         //throw new UnsupportedOperationException("Unimplemented method 'getquiz'");
 

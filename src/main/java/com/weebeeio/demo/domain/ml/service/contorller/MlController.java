@@ -87,7 +87,7 @@ public class MlController {
             case 0: user.setUserrank("브론즈"); break;
             case 1: user.setUserrank("실버");   break;
             case 2: user.setUserrank("골드");   break;
-            default: user.setUserrank("언랭랭");
+            default: user.setUserrank("언랭"); break;
         }
 
         // 5) DB 저장

@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
+
 import java.util.stream.Collectors;
 
 import com.weebeeio.demo.domain.login.entity.User;
@@ -42,7 +42,7 @@ public class QuizController {
 
     @Operation(summary = "퀴즈 가져오기", description = "과목, 레벨로 퀴즈를 가져옵니다.")
     @GetMapping("/generation/{subject}/{level}")
-    public Optional<QuizDao> getquiz(@PathVariable String subject, @PathVariable Integer level) {
+    public List<QuizDao> getquiz(@PathVariable String subject, @PathVariable Integer level) {
         return quizService.getquiz(subject, level);
     }
 
