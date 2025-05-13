@@ -95,6 +95,18 @@ public class QuizController {
             statsService.save(stats);
             return "정답";
         } else {
+            switch (quiz.getSubject()) {
+                case "재태크":
+                    stats.setInvestStat(stats.getInvestStat() - quiz.getQuizLevel());
+                    break;
+                case "신용/소비":
+                    stats.setCreditStat(stats.getCreditStat() - quiz.getQuizLevel());
+                    break;
+                case "금융상식":
+                    stats.setFiStat(stats.getFiStat() - quiz.getQuizLevel());
+                    break;
+            }
+            statsService.save(stats);
             return "오답";
         }
     }
