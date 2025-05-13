@@ -5,7 +5,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import java.util.stream.Collectors;
@@ -49,66 +51,61 @@ public class QuizController {
 
     @Operation(summary = "퀴즈 정답 확인", description = "퀴즈 정답을 확인합니다.")
     @GetMapping("/iscorrect/{quiz_id}/{answer}")
-    public String grading(
-            @PathVariable Integer quiz_id,
+    public ResponseEntity<Map<String, Object>> grading(
+            @PathVariable("quiz_id") Integer quizId,
             @PathVariable String answer) {
-    
+
+        // 1) 인증된 사용자
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal(); 
-        Integer user_id = user.getUserId();       
+        User user = (User) auth.getPrincipal();
+        Integer userId = user.getUserId();
 
+        // 2) 퀴즈 & 통계 조회
+        QuizDao quiz = quizService.findquizbyid(quizId)
+                .orElseThrow(() -> new NoSuchElementException("퀴즈가 없습니다. ID: " + quizId));
+        StatsDao stats = statsService.getStatsById(userId)
+                .orElseThrow(() -> new NoSuchElementException("사용자 스탯이 없습니다. ID: " + userId));
 
-        // 1) 퀴즈와 통계(및 유저) 조회ㄴ
-        QuizDao quiz = quizService.findquizbyid(quiz_id)
-                             .orElseThrow(() -> new NoSuchElementException("퀴즈가 없습니다."));
-        StatsDao stats = statsService.getStatsById(user_id)
-                             .orElseThrow(() -> new NoSuchElementException("사용자 스탯이 없습니다.")); // StatsDao에 @ManyToOne User 매핑이 있다고 가정
-    
-        // 2) 기존 결과가 있으면 가져오고, 없으면 새로 생성
+        // 3) 결과 엔티티 준비
         QuizResultDao result = quizResultService
-            .findResultbyIdandQuizid(user_id, quiz_id)
+            .findResultbyIdandQuizid(userId, quizId)
             .orElseGet(() -> {
-                QuizResultDao newResult = new QuizResultDao();
-                newResult.setQuizId(quiz);  // QuizDao 타입 필드 세팅                // User 엔티티 세팅
-                newResult.setUser(user);
-                return newResult;
+                QuizResultDao r = new QuizResultDao();
+                r.setQuizId(quiz);
+                r.setUser(user);
+                return r;
             });
-    
-        // 3) 정답 여부 판단 및 저장
+
+        // 4) 정답 여부 판단
         boolean isCorrect = answer.equals(quiz.getQuizAnswer());
         result.setIsCorrect(isCorrect);
         quizResultService.save(result);
-    
-        // 4) 정답일 때만 통계 업데이트
-        if (isCorrect) {
-            switch (quiz.getSubject()) {
-                case "재태크":
-                    stats.setInvestStat(stats.getInvestStat() + quiz.getQuizLevel());
-                    break;
-                case "신용/소비":
-                    stats.setCreditStat(stats.getCreditStat() + quiz.getQuizLevel());
-                    break;
-                case "금융상식":
-                    stats.setFiStat(stats.getFiStat() + quiz.getQuizLevel());
-                    break;
-            }
-            statsService.save(stats);
-            return "정답";
-        } else {
-            switch (quiz.getSubject()) {
-                case "재태크":
-                    stats.setInvestStat(stats.getInvestStat() - quiz.getQuizLevel());
-                    break;
-                case "신용/소비":
-                    stats.setCreditStat(stats.getCreditStat() - quiz.getQuizLevel());
-                    break;
-                case "금융상식":
-                    stats.setFiStat(stats.getFiStat() - quiz.getQuizLevel());
-                    break;
-            }
-            statsService.save(stats);
-            return "오답";
+
+        // 5) 통계 업데이트
+        int delta = quiz.getQuizLevel();
+        switch (quiz.getSubject()) {
+            case "재태크":
+                stats.setInvestStat(stats.getInvestStat() + (isCorrect ? delta : -delta));
+                break;
+            case "신용/소비":
+                stats.setCreditStat(stats.getCreditStat() + (isCorrect ? delta : -delta));
+                break;
+            case "금융상식":
+                stats.setFiStat(stats.getFiStat() + (isCorrect ? delta : -delta));
+                break;
         }
+        statsService.save(stats);
+
+        // 6) JSON 응답 생성
+        Map<String, Object> body = new HashMap<>();
+        body.put("quizId", quizId);
+        body.put("userId", userId);
+        body.put("isCorrect", isCorrect);
+        body.put("message", isCorrect ? "정답" : "오답");
+
+        return ResponseEntity
+                .ok()
+                .body(body);
     }
     
 
