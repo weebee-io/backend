@@ -22,7 +22,7 @@ public class QuizDao {
     private String quizContent;   // camelCase
 
     @Column(name = "subject", nullable = false)
-    private String subject;
+    private QuizSubject quizSubject;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "quiz_rank", nullable = false)
@@ -46,6 +46,9 @@ public class QuizDao {
 
     public enum QuizRank {
         BRONZE, SILVER, GOLD
+    }
+    public enum QuizSubject {
+        재태크, 금융상식 , 신용소비
     }
 }
 

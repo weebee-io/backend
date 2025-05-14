@@ -17,6 +17,7 @@ import com.weebeeio.demo.domain.quiz.dao.Quiz2Dao;
 import com.weebeeio.demo.domain.quiz.dao.Quiz4Dao;
 import com.weebeeio.demo.domain.quiz.dao.QuizDao;
 import com.weebeeio.demo.domain.quiz.dao.QuizDao.QuizRank;
+import com.weebeeio.demo.domain.quiz.dao.QuizDao.QuizSubject;
 import com.weebeeio.demo.domain.quiz.repository.QuizOption2Repository;
 import com.weebeeio.demo.domain.quiz.repository.QuizOption4Repository;
 import com.weebeeio.demo.domain.quiz.dao.QuizResultDao;
@@ -49,9 +50,9 @@ public class QuizController {
     private final QuizOption4Repository quizOption4Repository;
 
     @Operation(summary = "퀴즈 가져오기", description = "과목, 레벨로 퀴즈를 가져옵니다.")
-    @GetMapping("/generation/{subject}/{quizRank}")
-    public List<QuizDao> getquiz(@PathVariable String subject, @PathVariable QuizRank quizRank) {
-        return quizService.getquiz(subject, quizRank);
+    @GetMapping("/generation/{quizSubject}/{quizRank}")
+    public List<QuizDao> getquiz(@PathVariable QuizSubject quizSubject, @PathVariable QuizRank quizRank) {
+        return quizService.getquiz(quizSubject, quizRank);
     }
 
 
@@ -90,14 +91,14 @@ public class QuizController {
 
         // 5) 통계 업데이트
         int delta = quiz.getQuizLevel();
-        switch (quiz.getSubject()) {
-            case "재태크":
+        switch (quiz.getQuizSubject()) {
+            case 재태크:
                 stats.setInvestStat(stats.getInvestStat() + (isCorrect ? delta : -delta));
                 break;
-            case "신용소비":
+            case 신용소비:
                 stats.setCreditStat(stats.getCreditStat() + (isCorrect ? delta : -delta));
                 break;
-            case "금융상식":
+            case 금융상식:
                 stats.setFiStat(stats.getFiStat() + (isCorrect ? delta : -delta));
                 break;
         }
@@ -151,13 +152,14 @@ public class QuizController {
                 String quizContent = parts[0].trim();
                 int level         = Integer.parseInt(parts[1].trim());
                 String subject    = parts[2].trim();
+                QuizSubject subjectEnum = QuizSubject.valueOf(subject);
                 QuizRank rank     = QuizRank.valueOf(parts[3].trim().toUpperCase());
 
                 // 1) Quiz 저장
                 QuizDao quiz = QuizDao.builder()
                         .quizContent(quizContent)
                         .quizLevel(level)
-                        .subject(subject)
+                        .quizSubject(subjectEnum)
                         .quizRank(rank)
                         .build();
                 quizService.save(quiz);
