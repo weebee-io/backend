@@ -48,7 +48,7 @@ public class QuizDao {
         BRONZE, SILVER, GOLD
     }
     public enum QuizSubject {
-        재태크, 금융상식 , 신용소비
+        invest, finance , credit
     }
 }
 
