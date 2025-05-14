@@ -49,9 +49,9 @@ public class QuizController {
     private final QuizOption4Repository quizOption4Repository;
 
     @Operation(summary = "퀴즈 가져오기", description = "과목, 레벨로 퀴즈를 가져옵니다.")
-    @GetMapping("/generation/{subject}/{level}")
-    public List<QuizDao> getquiz(@PathVariable String subject, @PathVariable Integer level) {
-        return quizService.getquiz(subject, level);
+    @GetMapping("/generation/{subject}/{quizRank}")
+    public List<QuizDao> getquiz(@PathVariable String subject, @PathVariable QuizRank quizRank) {
+        return quizService.getquiz(subject, quizRank);
     }
 
 

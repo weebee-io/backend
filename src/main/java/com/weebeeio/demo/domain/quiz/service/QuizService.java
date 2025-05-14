@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 
 import com.weebeeio.demo.domain.quiz.dao.QuizDao;
+import com.weebeeio.demo.domain.quiz.dao.QuizDao.QuizRank;
 import com.weebeeio.demo.domain.quiz.repository.QuizRepository;
 
 @Service
@@ -25,11 +26,11 @@ public class QuizService {
 
 
     //수정정
-    public List<QuizDao> getquiz(String subject, Integer level) {
+    public List<QuizDao> getquiz(String subject, QuizRank quizRank) {
         
         //throw new UnsupportedOperationException("Unimplemented method 'getquiz'");
 
-        return quizRepository.findBySubjectAndQuizLevel(subject, level);
+        return quizRepository.findBySubjectAndQuizRank(subject, quizRank);
     }
 
 
