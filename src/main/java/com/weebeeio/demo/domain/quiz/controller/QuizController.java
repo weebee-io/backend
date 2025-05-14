@@ -92,13 +92,13 @@ public class QuizController {
         // 5) 통계 업데이트
         int delta = quiz.getQuizLevel();
         switch (quiz.getQuizSubject()) {
-            case 재태크:
+            case invest:
                 stats.setInvestStat(stats.getInvestStat() + (isCorrect ? delta : -delta));
                 break;
-            case 신용소비:
+            case credit:
                 stats.setCreditStat(stats.getCreditStat() + (isCorrect ? delta : -delta));
                 break;
-            case 금융상식:
+            case finance:
                 stats.setFiStat(stats.getFiStat() + (isCorrect ? delta : -delta));
                 break;
         }
