@@ -77,9 +77,7 @@ public class QuizController {
             });
 
         // 4) 정답 여부 판단 (공백, 대소문자 무시)
-        String cleanUserAnswer = answer.replaceAll("\\s+", "").toLowerCase();
-        String cleanCorrectAnswer = quiz.getQuizAnswer().replaceAll("\\s+", "").toLowerCase();
-        boolean isCorrect = cleanUserAnswer.equals(cleanCorrectAnswer);
+        boolean isCorrect = answer.equals(quiz.getCorrectAns());
         result.setIsCorrect(isCorrect);
         quizResultService.save(result);
 
@@ -89,7 +87,7 @@ public class QuizController {
             case "재태크":
                 stats.setInvestStat(stats.getInvestStat() + (isCorrect ? delta : -delta));
                 break;
-            case "신용/소비":
+            case "신용소비":
                 stats.setCreditStat(stats.getCreditStat() + (isCorrect ? delta : -delta));
                 break;
             case "금융상식":
