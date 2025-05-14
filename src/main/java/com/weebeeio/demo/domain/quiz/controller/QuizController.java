@@ -13,7 +13,12 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import com.weebeeio.demo.domain.login.entity.User;
+import com.weebeeio.demo.domain.quiz.dao.Quiz2Dao;
+import com.weebeeio.demo.domain.quiz.dao.Quiz4Dao;
 import com.weebeeio.demo.domain.quiz.dao.QuizDao;
+import com.weebeeio.demo.domain.quiz.dao.QuizDao.QuizRank;
+import com.weebeeio.demo.domain.quiz.repository.QuizOption2Repository;
+import com.weebeeio.demo.domain.quiz.repository.QuizOption4Repository;
 import com.weebeeio.demo.domain.quiz.dao.QuizResultDao;
 import com.weebeeio.demo.domain.quiz.service.QuizResultService;
 import com.weebeeio.demo.domain.quiz.service.QuizService;
@@ -40,7 +45,8 @@ public class QuizController {
     private final QuizService quizService;
     private final QuizResultService quizResultService;
     private final StatsService statsService;
-
+    private final QuizOption2Repository quizOption2Repository;
+    private final QuizOption4Repository quizOption4Repository;
 
     @Operation(summary = "퀴즈 가져오기", description = "과목, 레벨로 퀴즈를 가져옵니다.")
     @GetMapping("/generation/{subject}/{level}")
@@ -65,6 +71,7 @@ public class QuizController {
                 .orElseThrow(() -> new NoSuchElementException("퀴즈가 없습니다. ID: " + quizId));
         StatsDao stats = statsService.getStatsById(userId)
                 .orElseThrow(() -> new NoSuchElementException("사용자 스탯이 없습니다. ID: " + userId));
+        
 
         // 3) 결과 엔티티 준비
         QuizResultDao result = quizResultService
@@ -75,7 +82,7 @@ public class QuizController {
                 r.setUser(user);
                 return r;
             });
-
+            
         // 4) 정답 여부 판단 (공백, 대소문자 무시)
         boolean isCorrect = answer.equals(quiz.getCorrectAns());
         result.setIsCorrect(isCorrect);
@@ -118,38 +125,76 @@ public class QuizController {
         return ResponseEntity.ok(results);
     }
     
+    
     @Operation(summary = "퀴즈 일괄 업로드", description = "텍스트 파일을 업로드하여 퀴즈를 일괄 등록합니다.")
     @PostMapping(path = "/admin/upload", consumes = "multipart/form-data")
-    public ResponseEntity<String> uploadQuizFile(
-            @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadQuizFile(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("파일이 비어 있습니다.");
         }
+
         int count = 0;
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
+
+            // 세미콜론(;)으로 엔트리 구분
             String content = reader.lines().collect(Collectors.joining(""));
             String[] entries = content.split(";");
+
             for (String entry : entries) {
                 if (entry == null || entry.isBlank()) continue;
                 String[] parts = entry.split(",");
-                if (parts.length < 4) continue;
-                String quizContent = parts[0].trim();
-                String answer = parts[1].trim();
-                int level = Integer.parseInt(parts[2].trim());
-                String subject = parts[3].trim();
 
-                QuizDao quiz = new QuizDao();
-                quiz.setQuizcontent(quizContent);
-                quiz.setQuizAnswer(answer);
-                quiz.setQuizLevel(level);
-                quiz.setSubject(subject);
+                // 최소 7개(2지선다), 최대 9개(4지선다) 확인
+                if (parts.length != 7 && parts.length != 9) continue;
+
+                String quizContent = parts[0].trim();
+                int level         = Integer.parseInt(parts[1].trim());
+                String subject    = parts[2].trim();
+                QuizRank rank     = QuizRank.valueOf(parts[3].trim().toUpperCase());
+
+                // 1) Quiz 저장
+                QuizDao quiz = QuizDao.builder()
+                        .quizContent(quizContent)
+                        .quizLevel(level)
+                        .subject(subject)
+                        .quizRank(rank)
+                        .build();
                 quizService.save(quiz);
+
+                // 2) 옵션 저장
+                if (parts.length == 7) {
+                    // 2지선다 (BRONZE, SILVER)
+                    Quiz2Dao option2 = Quiz2Dao.builder()
+                        .quiz(quiz)
+                        .choiceA(parts[4].trim())
+                        .choiceB(parts[5].trim())
+                        .correctAns(parts[6].trim())
+                        .build();
+                    quizOption2Repository.save(option2);
+
+                } else {
+                    // 4지선다 (GOLD)
+                    Quiz4Dao option4 = Quiz4Dao.builder()
+                        .quiz(quiz)
+                        .choiceA(parts[4].trim())
+                        .choiceB(parts[5].trim())
+                        .choiceC(parts[6].trim())
+                        .choiceD(parts[7].trim())
+                        .correctAns(parts[8].trim())
+                        .build();
+                    quizOption4Repository.save(option4);
+                }
+
                 count++;
             }
-        } catch (IOException | NumberFormatException e) {
-            return ResponseEntity.badRequest().body("파일 파싱 중 오류가 발생했습니다: " + e.getMessage());
+
+        } catch (Exception e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("파일 처리 중 오류가 발생했습니다: " + e.getMessage());
         }
+
         return ResponseEntity.ok("총 " + count + "개의 퀴즈가 등록되었습니다.");
     }
 
