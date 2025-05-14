@@ -76,8 +76,10 @@ public class QuizController {
                 return r;
             });
 
-        // 4) 정답 여부 판단
-        boolean isCorrect = answer.equals(quiz.getQuizAnswer());
+        // 4) 정답 여부 판단 (공백, 대소문자 무시)
+        String cleanUserAnswer = answer.replaceAll("\\s+", "").toLowerCase();
+        String cleanCorrectAnswer = quiz.getQuizAnswer().replaceAll("\\s+", "").toLowerCase();
+        boolean isCorrect = cleanUserAnswer.equals(cleanCorrectAnswer);
         result.setIsCorrect(isCorrect);
         quizResultService.save(result);
 
