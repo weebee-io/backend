@@ -1,0 +1,22 @@
+# docker-compose.yml
+version: '3.8'
+services:
+  kafka:
+    image: bitnami/kafka:latest
+    environment:
+      # KRaft 활성화
+      - KAFKA_ENABLE_KRAFT=yes
+      # broker + controller 둘 다 수행
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      # broker/controller 노드 ID
+      - KAFKA_CFG_NODE_ID=1
+      # 컨트롤러 quorum: nodeId@호스트:컨트롤러포트
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+      # 외부 클라이언트 접속용 리스너
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      # 클러스터 내·외부 광고용
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    ports:
+      - 9092:9092
+      - 9093:9093

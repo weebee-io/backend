@@ -1,6 +1,7 @@
 package com.weebeeio.demo.domain.stats.controller;
 
 import com.weebeeio.demo.domain.login.entity.User;
+import com.weebeeio.demo.domain.login.service.UserService;
 import com.weebeeio.demo.domain.stats.dao.StatsDao;
 import com.weebeeio.demo.domain.stats.dto.UserStatsResponseDto;
 import com.weebeeio.demo.domain.stats.service.StatsService;
@@ -29,6 +30,9 @@ public class StatsController {
     @Autowired
     private final StatsService statsService;
 
+    @Autowired
+    private final UserService userService;
+
     @GetMapping("/getuserstats")
     @Operation(summary = "회원 스탯 조회", description = "회원 스탯을 조회합니다.")
     public ResponseEntity<UserStatsResponseDto> getUserStats(
@@ -42,14 +46,14 @@ public class StatsController {
             .orElseThrow(() -> new NoSuchElementException("Stats를 찾을 수 없습니다. ID=" + userId));
 
         if (stats.getStatSum() >= 1000) {
-            userRank = "GOLD";
+            user.setUserrank("GOLD");
         } else if (stats.getStatSum() >= 500) {
-            userRank = "SILVER";
-        } else if (stats.getStatSum() >= 100) {
-            userRank = "BRONZE";
+            user.setUserrank("SILVER");
         } else {
-            userRank = "LOSER";
+            user.setUserrank("BRONZE");
         }
+
+        userService.save(user);
 
         UserStatsResponseDto dto = new UserStatsResponseDto(stats, userRank);
     
