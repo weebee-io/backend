@@ -46,14 +46,14 @@ public class SurveyService {
         // 3) Survey 엔티티 생성 및 필드 매핑
         Survey survey = Survey.builder()
             .user(user)
-            .assetType(req.getAssetType())
-            .investResource(req.getInvestResource())
-            .creditScore(req.getCreditScore())
-            .delinquentCount(req.getDelinquentCount())
-            .debtRatio(req.getDebtRatio())
-            .consumptionScore(req.getConsumptionScore())
-            .digitalFriendly(req.getDigitalFriendly())
-            .finKnowScore(req.getFinKnowScore())
+            .riskProfileScore(req.getRisk_profile_score())
+            .complexProductFlag(req.getComplex_product_flag())
+            .isMarried(req.getIs_married())
+            .essentialPct(req.getEssential_pct())
+            .discretionaryPct(req.getDiscretionary_pct())
+            .savInvRatio(req.getSav_inv_ratio())
+            .spendVolatility(req.getSpend_volatility())
+            .digitalEngagement(req.getDigital_engagement())
             .build();
 
         // 4) DB에 설문 응답 저장
@@ -64,14 +64,14 @@ public class SurveyService {
         // 6) 저장 결과를 DTO로 변환하여 반환
         return new SurveyResponse(
             survey.getUserId(),
-            survey.getAssetType(),
-            survey.getInvestResource(),
-            survey.getCreditScore(),
-            survey.getDelinquentCount(),
-            survey.getDebtRatio(),
-            survey.getConsumptionScore(),
-            survey.getDigitalFriendly(),
-            survey.getFinKnowScore(),
+            survey.getRiskProfileScore(),
+            survey.getComplexProductFlag(),
+            survey.getIsMarried(),
+            survey.getEssentialPct(),
+            survey.getDiscretionaryPct(),
+            survey.getSavInvRatio(),
+            survey.getSpendVolatility(),
+            survey.getDigitalEngagement(),
             /* 예측 결과 */ null
         );
     }

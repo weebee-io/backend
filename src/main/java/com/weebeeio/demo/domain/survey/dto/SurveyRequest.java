@@ -12,33 +12,33 @@ public class SurveyRequest {
     
     /** 자산 유형 (asset_type 컬럼에 매핑) */
     @NotNull
-    private Integer assetType;
+    private Integer risk_profile_score;
     
     /** 투자 공부 수단 (invest_resource 컬럼에 매핑) */
     @NotNull
-    private Integer investResource;
+    private Integer complex_product_flag;
     
     /** 신용 점수 (credit_score 컬럼에 매핑) */
     @NotNull
-    private Integer creditScore;
+    private Integer is_married;
     
     /** 연체 횟수 (delinquent_count 컬럼에 매핑) */
     @NotNull
-    private Integer delinquentCount;
+    private Integer essential_pct;
     
     /** 부채 비율 (debt_ratio 컬럼에 매핑) */
     @NotNull
-    private Integer debtRatio;
+    private Integer discretionary_pct;
     
     /** 소비 습관 점수 (consumption_score 컬럼에 매핑) */
     @NotNull
-    private Integer consumptionScore;
+    private Integer sav_inv_ratio;
     
     /** 디지털 친화도 (digital_friendly 컬럼에 매핑) */
     @NotNull
-    private Integer digitalFriendly;
+    private Integer spend_volatility;
     
     /** 금융 지식 퀴즈 점수 (fin_know_score 컬럼에 매핑) */
     @NotNull
-    private Integer finKnowScore;
+    private Integer digital_engagement;
 }

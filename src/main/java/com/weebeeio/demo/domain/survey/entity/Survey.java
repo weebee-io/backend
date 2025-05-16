@@ -22,36 +22,34 @@ public class Survey {
     @JoinColumn(name = "user_id")
     private User user;
 
-    /** 투자 상품 유형 */
-    @Column(name = "asset_type", nullable = false)
-    private Integer assetType;
 
-    /** 투자 공부 수단 */
-    @Column(name = "invest_resource", nullable = false)
-    private Integer investResource;
+    @Column(name = "risk_profile_score", nullable = false)
+    private Integer riskProfileScore;
 
-    /** 신용 점수 */
-    @Column(name = "credit_score", nullable = false)
-    private Integer creditScore;
 
-    /** 연체 여부 (횟수) */
-    @Column(name = "delinquent_count", nullable = false)
-    private Integer delinquentCount;
+    @Column(name = "complex_product_flag", nullable = false)
+    private Integer complexProductFlag;
 
-    /** 소득 대비 부채 비율 */
-    @Column(name = "debt_ratio", nullable = false)
-    private Integer debtRatio;
+    @Column(name = "is_married", nullable = false)
+    private Integer isMarried;
 
-    /** 소비 습관 점수 */
-    @Column(name = "consumption_score", nullable = false)
-    private Integer consumptionScore;
+    @Column(name = "essential_pct", nullable = false)
+    private Integer essentialPct;
 
-    /** 디지털 친화도 */
-    @Column(name = "digital_friendly", nullable = false)
-    private Integer digitalFriendly;
+    @Column(name = "discretionary_pct", nullable = false)
+    private Integer discretionaryPct;
 
-    /** 금융 지식 퀴즈 점수 */
-    @Column(name = "fin_know_score", nullable = false)
-    private Integer finKnowScore;
+    @Column(name = "sav_inv_ratio", nullable = false)
+    private Integer savInvRatio;
+
+
+    @Column(name = "spend_volatility", nullable = false)
+    private Integer spendVolatility;
+
+
+    @Column(name = "digital_engagement", nullable = false)
+    private Integer digitalEngagement;
+
+
 
 }

@@ -14,28 +14,28 @@ public class SurveyResponse {
     private Integer userId;
     
     /** 자산 유형 */
-    private Integer assetType;
+    private Integer risk_profile_score;
     
     /** 투자 공부 수단 */
-    private Integer investResource;
+    private Integer complex_product_flag;
     
     /** 신용 점수 */
-    private Integer creditScore;
+    private Integer is_married;
     
     /** 연체 횟수 */
-    private Integer delinquentCount;
+    private Integer essential_pct;
     
     /** 부채 비율 */
-    private Integer debtRatio;
+    private Integer discretionary_pct;
     
     /** 소비 습관 점수 */
-    private Integer consumptionScore;
+    private Integer sav_inv_ratio;
     
     /** 디지털 친화도 */
-    private Integer digitalFriendly;
+    private Integer spend_volatility;
     
     /** 금융 지식 퀴즈 점수 */
-    private Integer finKnowScore;
+    private Integer digital_engagement;
     
     /** 사용자 세그먼트 (예측 결과) */
     private String userSegment;  // FastAPI 호출 전에는 null
