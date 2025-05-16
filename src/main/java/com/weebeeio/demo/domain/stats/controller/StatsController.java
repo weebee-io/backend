@@ -41,6 +41,16 @@ public class StatsController {
         StatsDao stats = statsService.getStatsById(userId)
             .orElseThrow(() -> new NoSuchElementException("Stats를 찾을 수 없습니다. ID=" + userId));
 
+        if (stats.getStatSum() >= 1000) {
+            userRank = "GOLD";
+        } else if (stats.getStatSum() >= 500) {
+            userRank = "SILVER";
+        } else if (stats.getStatSum() >= 100) {
+            userRank = "BRONZE";
+        } else {
+            userRank = "BRONZE";
+        }
+        
         UserStatsResponseDto dto = new UserStatsResponseDto(stats, userRank);
     
         // 200 OK로 응답

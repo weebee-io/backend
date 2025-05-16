@@ -93,13 +93,28 @@ public class QuizController {
         int delta = quiz.getQuizLevel();
         switch (quiz.getQuizSubject()) {
             case invest:
-                stats.setInvestStat(stats.getInvestStat() + (isCorrect ? delta : -delta));
+                if (isCorrect) {
+                    stats.setInvestStat(stats.getInvestStat() + delta);
+                } else {
+                    int newValue = Math.max(0, stats.getInvestStat() - delta);
+                    stats.setInvestStat(newValue);
+                }
                 break;
             case credit:
-                stats.setCreditStat(stats.getCreditStat() + (isCorrect ? delta : -delta));
+                if (isCorrect) {
+                    stats.setCreditStat(stats.getCreditStat() + delta);
+                } else {
+                    int newValue = Math.max(0, stats.getCreditStat() - delta);
+                    stats.setCreditStat(newValue);
+                }
                 break;
             case finance:
-                stats.setFiStat(stats.getFiStat() + (isCorrect ? delta : -delta));
+                if (isCorrect) {
+                    stats.setFiStat(stats.getFiStat() + delta);
+                } else {
+                    int newValue = Math.max(0, stats.getFiStat() - delta);
+                    stats.setFiStat(newValue);
+                }
                 break;
         }
         statsService.save(stats);
