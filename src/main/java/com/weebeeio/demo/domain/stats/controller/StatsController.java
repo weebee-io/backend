@@ -48,9 +48,9 @@ public class StatsController {
         } else if (stats.getStatSum() >= 100) {
             userRank = "BRONZE";
         } else {
-            userRank = "BRONZE";
+            userRank = "LOSER";
         }
-        
+
         UserStatsResponseDto dto = new UserStatsResponseDto(stats, userRank);
     
         // 200 OK로 응답
