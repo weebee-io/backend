@@ -1,4 +1,4 @@
-package com.weebeeio.demo.domain.ml.contorller;
+package com.weebeeio.demo.domain.ml.controller;
 
 import java.util.Collections;
 import java.util.HashMap;

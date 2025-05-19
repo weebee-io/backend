@@ -6,7 +6,7 @@ __consumer_offsets 0 0
 __consumer_offsets 6 0
 __consumer_offsets 35 0
 __consumer_offsets 30 0
-__consumer_offsets 13 10
+__consumer_offsets 13 596
 __consumer_offsets 26 0
 __consumer_offsets 21 0
 __consumer_offsets 19 0
@@ -41,7 +41,7 @@ __consumer_offsets 46 0
 __consumer_offsets 23 0
 __consumer_offsets 42 0
 __consumer_offsets 28 0
-clustering_userRank 0 0
+clustering_userRank 0 3
 __consumer_offsets 4 0
 __consumer_offsets 31 0
 __consumer_offsets 5 0

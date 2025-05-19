@@ -1,6 +1,7 @@
 package com.weebeeio.demo.domain.ml.service;
 
 import java.util.Collections;
+import java.util.Map;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -29,14 +30,14 @@ public class MlService {
 
 
     
-    public void getClusterResult(ConsumerRecord<String, String> record, User user) {
+    public void getClusterResult(ConsumerRecord<String, Map<String, Object>> record, User user) {
 
         String key       = record.key();
-        String value     = record.value();
+        Map<String, Object> value     = record.value();
 
         logger.debug("key={}, cluster={}",key, value);
 
-        switch (value) {
+        switch (value.get("cluster_result").toString()) {
             case "0": user.setUserrank("브론즈"); break;
             case "1": user.setUserrank("실버");   break;
             case "2": user.setUserrank("골드");   break;
