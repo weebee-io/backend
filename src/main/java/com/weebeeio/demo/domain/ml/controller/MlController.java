@@ -1,12 +1,10 @@
 package com.weebeeio.demo.domain.ml.controller;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,8 +30,8 @@ public class MlController {
     private final SurveyService surveyService;
 
    
-    @Autowired
-    private KafkaTemplate<String, Map<String, Object>> kafkaTemplate;
+    
+    private final KafkaTemplate<String , Map<String, Object>> kafkaTemplate;
 
     private static final String TOPIC = "clustering_userRank";
 
@@ -57,7 +55,7 @@ public class MlController {
         payload.put("spend_volatility",  survey.getSpendVolatility());
         payload.put("digital_engagement",        survey.getDigitalEngagement());
 
-        kafkaTemplate.send(TOPIC, payload);
+        kafkaTemplate.send(TOPIC,user.getUserId().toString(), payload);
 
         return ResponseEntity.ok("클러스터링 요청 완료");
     }
