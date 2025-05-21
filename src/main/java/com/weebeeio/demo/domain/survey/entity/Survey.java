@@ -23,9 +23,9 @@ public class Survey {
     private User user;
 
 
+    /** 위험 프로필 점수 */
     @Column(name = "risk_profile_score", nullable = false)
     private Integer riskProfileScore;
-
 
     @Column(name = "complex_product_flag", nullable = false)
     private Integer complexProductFlag;
@@ -42,14 +42,9 @@ public class Survey {
     @Column(name = "sav_inv_ratio", nullable = false)
     private Integer savInvRatio;
 
-
     @Column(name = "spend_volatility", nullable = false)
     private Integer spendVolatility;
 
-
     @Column(name = "digital_engagement", nullable = false)
     private Integer digitalEngagement;
-
-
-
 }
