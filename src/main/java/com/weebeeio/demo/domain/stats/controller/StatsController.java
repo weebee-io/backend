@@ -38,10 +38,8 @@ public class StatsController {
         Integer userId = user.getUserId();
                 
         // 통계 데이터 가져오기
-        StatsDao stats = statsService.getFirstStatsByUserId(userId);
-        if (stats == null) {
-            throw new NoSuchElementException("Stats를 찾을 수 없습니다. ID=" + userId);
-        }
+        StatsDao stats = statsService.getStatsById(userId)
+                .orElseThrow(() -> new NoSuchElementException("Stats를 찾을 수 없습니다. ID=" + userId));
 
         // 계산된 최신 랭크 가져오기
         String userRank = user.getUserrank();
@@ -64,7 +62,6 @@ public class StatsController {
         if (stats.isEmpty()) {
             throw new NoSuchElementException("사용자 스탯이 없습니다. ID: " + user.getUserId());
         }
-        
         return ResponseEntity.ok(Map.of("imageName", stats.get().getWeebeeImageName()));
     }
 
@@ -74,7 +71,7 @@ public class StatsController {
     @Operation(summary = "회원 스탯 초기화", description = "회원 스탯을 초기화합니다.")
     @GetMapping("/statsInit")
     public ResponseEntity<List<StatsDao>> statsInit() {
-        // 1) SecurityContext에서 현재 로그인한 User 꺼내기
+        // 1) SecurityContext에서 현재 로그인한 User 꼽내기
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         

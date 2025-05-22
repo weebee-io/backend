@@ -71,10 +71,8 @@ public class QuizController {
                 .orElseThrow(() -> new NoSuchElementException("퀘즈가 없습니다. ID: " + quizId));
         
         // 통계 데이터 가져오기 - 개선된 메서드 사용
-        StatsDao stats = statsService.getFirstStatsByUserId(userId);
-        if (stats == null) {
-            throw new NoSuchElementException("사용자 스탯이 없습니다. ID: " + userId);
-        }
+        StatsDao stats = statsService.getStatsById(userId)
+                .orElseThrow(() -> new NoSuchElementException("사용자 스탯이 없습니다. ID: " + userId));
         
 
         // 3) 결과 엔티티 준비
