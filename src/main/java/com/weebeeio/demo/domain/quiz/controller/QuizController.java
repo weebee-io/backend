@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.weebeeio.demo.domain.login.entity.User;
@@ -68,9 +68,13 @@ public class QuizController {
 
         // 2) 퀴즈 & 통계 조회
         QuizDao quiz = quizService.findquizbyid(quizId)
-                .orElseThrow(() -> new NoSuchElementException("퀴즈가 없습니다. ID: " + quizId));
-        StatsDao stats = statsService.getStatsById(userId)
-                .orElseThrow(() -> new NoSuchElementException("사용자 스탯이 없습니다. ID: " + userId));
+                .orElseThrow(() -> new NoSuchElementException("퀘즈가 없습니다. ID: " + quizId));
+        
+        // 통계 데이터 가져오기 - 개선된 메서드 사용
+        StatsDao stats = statsService.getFirstStatsByUserId(userId);
+        if (stats == null) {
+            throw new NoSuchElementException("사용자 스탯이 없습니다. ID: " + userId);
+        }
         
 
         // 3) 결과 엔티티 준비

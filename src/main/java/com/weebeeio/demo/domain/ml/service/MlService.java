@@ -8,7 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.weebeeio.demo.domain.login.entity.User;
 import com.weebeeio.demo.domain.login.service.UserService;
-
+import com.weebeeio.demo.domain.stats.dao.StatsDao;
+import com.weebeeio.demo.domain.stats.service.StatsService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -24,6 +25,7 @@ public class MlService {
     private static final String TOPIC = "clustering_results";
 
     private final UserService userService;
+    private final StatsService statsService;
 
     private static final Logger logger = LoggerFactory.getLogger(MlService.class);
     
@@ -86,7 +88,30 @@ public class MlService {
                 
                 // litLevel 기반으로 사용자 등급 설정
                 user.setUserrank(litLevel);
+                // 업데이트에 따라 유저 랭크 계산
+
+                StatsDao stats = new StatsDao();
+                stats.setUser(user);
+
+                switch (litLevel) {
+                    case "GOLD":
+                        stats.setInvestStat(400);
+                        stats.setCreditStat(400);
+                        stats.setFiStat(400);
+                        break;
+                    case "SILVER":
+                        stats.setInvestStat(300);
+                        stats.setCreditStat(300);
+                        stats.setFiStat(300);
+                        break;
+                    case "BRONZE":
+                        stats.setInvestStat(100);
+                        stats.setCreditStat(100);
+                        stats.setFiStat(100);
+                        break;
+                }
                 
+                statsService.save(stats);
                 // 업데이트된 사용자 저장
                 userService.save(user);
                 

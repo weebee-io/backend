@@ -119,4 +119,14 @@ public class User implements UserDetails {
         // 계정 사용 가능한지 확인하는 로직직
         return true; // ture -> 사용 가능
     }
+
+    /**
+     * User는 직접 statSum을 가지고 있지 않으므로,
+     * 이 메서드를 호출할 때는 주의가 필요합니다.
+     * JSON 직렬화 시 이 메서드가 호출될 수 있으므로
+     * 예외 대신 기본값 0을 반환합니다.
+     */
+    public int getStatSum() {
+        return 0; // 기본값 반환
+    }
 }

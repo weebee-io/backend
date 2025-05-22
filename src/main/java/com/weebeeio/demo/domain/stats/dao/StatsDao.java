@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import com.weebeeio.demo.domain.login.entity.User;
-import com.weebeeio.demo.domain.stats.dao.WeebeeLevel;
+
 
 @Data
 @Entity
@@ -36,10 +36,22 @@ public class StatsDao {
     @PrePersist
     @PreUpdate
     private void calculateSum() {
+        // 스탯섬 계산
         int sum = (investStat != null ? investStat : 0)
                 + (creditStat  != null ? creditStat  : 0)
                 + (fiStat      != null ? fiStat      : 0);
         this.statSum = sum;
+        
+        // 사용자 랭크 계산
+        if (user != null) {
+            if (sum >= 1200) {
+                user.setUserrank("GOLD");
+            } else if (sum >= 900) {
+                user.setUserrank("SILVER");
+            } else {
+                user.setUserrank("BRONZE");
+            }
+        }
     }
 
     public String getWeebeeImageName() {

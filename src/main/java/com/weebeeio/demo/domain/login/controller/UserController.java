@@ -5,6 +5,9 @@ import com.weebeeio.demo.domain.login.dto.UserLoginRequestDto;
 import com.weebeeio.demo.domain.login.dto.UserSignupRequestDto;
 import com.weebeeio.demo.domain.login.entity.User;
 import com.weebeeio.demo.domain.login.service.UserService;
+import com.weebeeio.demo.domain.stats.dao.StatsDao;
+import com.weebeeio.demo.domain.stats.service.StatsService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +25,20 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final StatsService statsService;
 
     /** 회원가입 : 토큰 없이 사용자 정보만 반환 */
     @PostMapping("/signup")
     @Operation(summary = "회원가입", description = "새로운 사용자를 등록한다.")
     public ResponseEntity<CommonResponseDto<User>> signup(@RequestBody UserSignupRequestDto requestDto) {
         User user = userService.signup(requestDto);
+
+        StatsDao stats = new StatsDao();
+        stats.setUser(user);
+        stats.setInvestStat(0);
+        stats.setCreditStat(0);
+        stats.setFiStat(0);
+        statsService.save(stats);
         return ResponseEntity.ok(CommonResponseDto.success(user, "회원가입이 완료되었습니다."));
     }
 

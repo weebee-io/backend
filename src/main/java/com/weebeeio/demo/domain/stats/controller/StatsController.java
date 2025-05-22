@@ -1,7 +1,6 @@
 package com.weebeeio.demo.domain.stats.controller;
 
 import com.weebeeio.demo.domain.login.entity.User;
-import com.weebeeio.demo.domain.login.service.UserService;
 import com.weebeeio.demo.domain.stats.dao.StatsDao;
 import com.weebeeio.demo.domain.stats.dto.UserStatsResponseDto;
 import com.weebeeio.demo.domain.stats.service.StatsService;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.NoSuchElementException;
-
+import java.util.Optional;
 import java.util.List;
 import java.util.Map;
 
@@ -30,31 +29,24 @@ public class StatsController {
     @Autowired
     private final StatsService statsService;
 
-    @Autowired
-    private final UserService userService;
 
     @GetMapping("/getuserstats")
     @Operation(summary = "회원 스탯 조회", description = "회원 스탯을 조회합니다.")
     public ResponseEntity<UserStatsResponseDto> getUserStats(
             @AuthenticationPrincipal User user) {
     
-        Integer userId   = user.getUserId();
-        String  userRank = user.getUserrank();
-    
- 
-        StatsDao stats = statsService.getStatsById(userId)
-            .orElseThrow(() -> new NoSuchElementException("Stats를 찾을 수 없습니다. ID=" + userId));
-
-        if (stats.getStatSum() >= 1000) {
-            user.setUserrank("GOLD");
-        } else if (stats.getStatSum() >= 500) {
-            user.setUserrank("SILVER");
-        } else {
-            user.setUserrank("BRONZE");
+        Integer userId = user.getUserId();
+                
+        // 통계 데이터 가져오기
+        StatsDao stats = statsService.getFirstStatsByUserId(userId);
+        if (stats == null) {
+            throw new NoSuchElementException("Stats를 찾을 수 없습니다. ID=" + userId);
         }
 
-        userService.save(user);
+        // 계산된 최신 랭크 가져오기
+        String userRank = user.getUserrank();
 
+        // 최신 랭크로 UserStatsResponseDto 생성
         UserStatsResponseDto dto = new UserStatsResponseDto(stats, userRank);
     
         // 200 OK로 응답
@@ -62,16 +54,22 @@ public class StatsController {
     }
 
     @GetMapping("/weebee-image")
-    @Operation(summary = "회원의 Weebee 이미지 조회", description = "회원의 금융스텟 총합에 따른 Weebee 이미지 이름을 조회합니다.")
+    @Operation(summary = "회원의 Weebee 이미지 조회", description = "회원의 금융스탯 총합에 따른 Weebee 이미지 이름을 조회합니다.")
     public ResponseEntity<Map<String, String>> getWeebeeImage() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         
-        StatsDao stats = statsService.getStatsById(user.getUserId())
-            .orElseThrow(() -> new IllegalStateException("사용자 스탯이 없습니다."));
+        // 첫 번째 통계 레코드 가져오기
+        Optional<StatsDao> stats = statsService.getStatsById(user.getUserId());
+        if (stats.isEmpty()) {
+            throw new NoSuchElementException("사용자 스탯이 없습니다. ID: " + user.getUserId());
+        }
         
-        return ResponseEntity.ok(Map.of("imageName", stats.getWeebeeImageName()));
+        return ResponseEntity.ok(Map.of("imageName", stats.get().getWeebeeImageName()));
     }
+
+
+    
 
     @Operation(summary = "회원 스탯 초기화", description = "회원 스탯을 초기화합니다.")
     @GetMapping("/statsInit")
