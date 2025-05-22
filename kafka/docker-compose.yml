@@ -1,5 +1,5 @@
 # # docker-compose.yml
-# version: '3.8'
+version: '3.8'
 # services:
 #   kafka:
 #     image: confluentinc/cp-kafka:latest   # Confluent Kafka 이미지 (KRaft 지원)
@@ -60,7 +60,7 @@ services:
       KAFKA_PROCESS_ROLES: "controller,broker"
       KAFKA_NODE_ID: "1"
       KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:9093"
-   
+
 
       KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
       KAFKA_LISTENERS: INTERNAL://0.0.0.0:29092,PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093

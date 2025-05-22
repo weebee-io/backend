@@ -45,16 +45,16 @@ public class SurveyService {
 
         // 3) Survey 엔티티 생성 및 필드 매핑
         Survey survey = Survey.builder()
-            .user(user)
-            .riskProfileScore(req.getRisk_profile_score())
-            .complexProductFlag(req.getComplex_product_flag())
-            .isMarried(req.getIs_married())
-            .essentialPct(req.getEssential_pct())
-            .discretionaryPct(req.getDiscretionary_pct())
-            .savInvRatio(req.getSav_inv_ratio())
-            .spendVolatility(req.getSpend_volatility())
-            .digitalEngagement(req.getDigital_engagement())
-            .build();
+                .user(user)                               // @MapsId 로 인해 userId 자동 매핑
+                .riskProfileScore(req.getRiskProfileScore())
+                .complexProductFlag(req.getComplexProductFlag())
+                .isMarried(req.getIsMarried())
+                .essentialPct(req.getEssentialPct())
+                .discretionaryPct(req.getDiscretionaryPct())
+                .savInvRatio(req.getSavInvRatio())
+                .spendVolatility(req.getSpendVolatility())
+                .digitalEngagement(req.getDigitalEngagement())
+                .build();
 
         // 4) DB에 설문 응답 저장
         survey = surveyRepository.save(survey);

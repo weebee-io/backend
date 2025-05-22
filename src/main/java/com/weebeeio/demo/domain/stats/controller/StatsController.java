@@ -75,7 +75,7 @@ public class StatsController {
 
     @Operation(summary = "회원 스탯 초기화", description = "회원 스탯을 초기화합니다.")
     @GetMapping("/statsInit")
-    public ResponseEntity<List<StatsDao>> statsInitt() {
+    public ResponseEntity<List<StatsDao>> statsInit() {
         // 1) SecurityContext에서 현재 로그인한 User 꺼내기
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
