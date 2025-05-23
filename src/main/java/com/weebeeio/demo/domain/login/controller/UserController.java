@@ -5,9 +5,6 @@ import com.weebeeio.demo.domain.login.dto.UserLoginRequestDto;
 import com.weebeeio.demo.domain.login.dto.UserSignupRequestDto;
 import com.weebeeio.demo.domain.login.entity.User;
 import com.weebeeio.demo.domain.login.service.UserService;
-import com.weebeeio.demo.domain.stats.controller.StatsController;
-import com.weebeeio.demo.domain.stats.dao.StatsDao;
-import com.weebeeio.demo.domain.stats.service.StatsService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

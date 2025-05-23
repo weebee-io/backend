@@ -29,7 +29,6 @@ public class MlService {
 
     private static final Logger logger = LoggerFactory.getLogger(MlService.class);
     
-    // 클러스터링 결과 메시지를 위한 DTO
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -63,7 +62,6 @@ public class MlService {
             
             logger.debug("카프카 메시지 수신 - 키={}, 값={}", key, clusteringResult);
             
-            // 키에서 사용자 ID 파싱
             int userId;
             try {
                 userId = Integer.parseInt(key);
