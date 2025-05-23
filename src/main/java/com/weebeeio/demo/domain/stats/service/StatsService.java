@@ -22,10 +22,7 @@ public class StatsService {
         this.statsRepository = statsRepository;
     }
 
-    /**
-     * 사용자 ID로 가장 최근 통계 레코드를 찾습니다.
-     * ID가 가장 큰 레코드를 반환합니다.
-     */
+
     public Optional<StatsDao> getStatsById(Integer userid) {
         return statsRepository.findByUser_UserId(userid);
     }

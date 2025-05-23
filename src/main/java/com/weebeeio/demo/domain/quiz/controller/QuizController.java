@@ -20,10 +20,12 @@ import com.weebeeio.demo.domain.quiz.dao.QuizDao.QuizSubject;
 import com.weebeeio.demo.domain.quiz.repository.QuizOption2Repository;
 import com.weebeeio.demo.domain.quiz.repository.QuizOption4Repository;
 import com.weebeeio.demo.domain.quiz.dao.QuizResultDao;
+import com.weebeeio.demo.domain.quiz.dto.PlacementTestdto;
 import com.weebeeio.demo.domain.quiz.service.QuizResultService;
 import com.weebeeio.demo.domain.quiz.service.QuizService;
 import com.weebeeio.demo.domain.stats.dao.StatsDao;
 import com.weebeeio.demo.domain.stats.service.StatsService;
+import com.weebeeio.demo.domain.login.service.UserService;
 
 import org.springframework.http.ResponseEntity;
 
@@ -45,6 +47,7 @@ public class QuizController {
     private final QuizService quizService;
     private final QuizResultService quizResultService;
     private final StatsService statsService;
+    private final UserService userService;
     private final QuizOption2Repository quizOption2Repository;
     private final QuizOption4Repository quizOption4Repository;
 
@@ -141,6 +144,59 @@ public class QuizController {
         List<QuizResultDao> results = quizResultService.findAllByUserId(userId);
         return ResponseEntity.ok(results);
     }
+
+    @Operation(summary = "배치고사 성적 받기", description = "배치고사 성적을 JSON 형태로 받아 처리후 배정된 랭크를 반환")
+    @PostMapping("/placementTest")
+    public ResponseEntity<Map<String, Object>> getPlacementTest(
+            @RequestBody PlacementTestdto placementTestdto,
+            @AuthenticationPrincipal User user) {
+        
+        Integer userId = user.getUserId();
+        
+        Integer investStat = placementTestdto.getInvestStat();
+        Integer creditStat = placementTestdto.getCreditStat();
+        Integer fiStat = placementTestdto.getFiStat();
+
+        StatsDao stats = statsService.getStatsById(userId)
+                .orElseThrow(() -> new NoSuchElementException("사용자 스탯이 없습니다. ID: " + userId));
+
+        if (stats.getInvestStat() + investStat >= 0) {
+            stats.setInvestStat(stats.getInvestStat() + investStat);
+        }
+        else{
+            stats.setInvestStat(0);
+        }
+        
+        if (stats.getCreditStat() + creditStat >= 0) {
+            stats.setCreditStat(stats.getCreditStat() + creditStat);
+        }
+        else{
+            stats.setCreditStat(0);
+        }
+        
+        if (stats.getFiStat() + fiStat >= 0) {
+            stats.setFiStat(stats.getFiStat() + fiStat);
+        }
+        else{
+            stats.setFiStat(0);
+        }
+        
+        statsService.save(stats);
+
+        User updatedUser = userService.getUserInfo(userId)
+                .orElseThrow(() -> new NoSuchElementException("사용자 정보를 찾을 수 없습니다. ID: " + userId));
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("nickname", updatedUser.getNickname());
+        response.put("investStat", stats.getInvestStat());
+        response.put("creditStat", stats.getCreditStat());
+        response.put("fiStat", stats.getFiStat());
+        response.put("rank", updatedUser.getUserrank());
+    
+        
+        return ResponseEntity.ok(response);
+    }
+    
     
     
     @Operation(summary = "퀴즈 일괄 업로드", description = "텍스트 파일을 업로드하여 퀴즈를 일괄 등록합니다.")
