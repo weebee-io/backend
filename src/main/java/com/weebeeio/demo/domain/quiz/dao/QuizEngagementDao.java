@@ -12,6 +12,7 @@ import com.weebeeio.demo.domain.login.entity.User;
 @Table(name = "quiz_engagement")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class QuizEngagementDao {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "engagement_id")

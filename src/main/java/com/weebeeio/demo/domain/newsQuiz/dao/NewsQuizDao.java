@@ -24,6 +24,12 @@ public class NewsQuizDao {
     @JoinColumn(name = "news_id", nullable = false)
     private NewsDao news;
 
+    @Column(name = "newsquiz_score", nullable = false)
+    private Integer newsquizScore;
+
+    @Column(name = "newsquiz_content", nullable = false, columnDefinition = "TEXT")
+    private String newsquizContent;
+
     @Column(name = "newsquiz_choice_a", nullable = false, columnDefinition = "TEXT")
     private String newsquizChoiceA;
 

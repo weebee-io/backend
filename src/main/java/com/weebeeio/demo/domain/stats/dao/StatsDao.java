@@ -25,6 +25,12 @@ public class StatsDao {
     @Column(name = "fi_stat")
     private Integer fiStat;
 
+    @Column(name = "news_stat")
+    private Integer newsStat;
+
+    @Column(name = "quest_stat")
+    private Integer questStat;
+
     @Column(name = "stat_sum")
     private Integer statSum;
 
