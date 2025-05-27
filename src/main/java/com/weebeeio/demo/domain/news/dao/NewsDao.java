@@ -28,6 +28,12 @@ public class NewsDao {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "summary", nullable = false,columnDefinition = "TEXT")
+    private String summary;
+
+    @Column(name = "keywords", nullable = false)
+    private String keywords;
+
     @Column(nullable = false, length = 255)
     private String url;
 
