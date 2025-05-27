@@ -32,9 +32,9 @@ public class NewsController {
     }
 
 
-    @GetMapping
+    @GetMapping("/{id}")
     @Operation(summary = "특정 뉴스 조회", description = "특정 뉴스를 조회")
-    public Optional<NewsDao> getNewsById(@RequestParam Integer id) {
+    public Optional<NewsDao> getNewsById(@org.springframework.web.bind.annotation.PathVariable Integer id) {
         return newsService.getNewsById(id);
     }
 

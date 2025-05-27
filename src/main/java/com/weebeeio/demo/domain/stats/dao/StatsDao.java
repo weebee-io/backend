@@ -41,7 +41,7 @@ public class StatsDao {
 
     @PrePersist
     @PreUpdate
-    private void calculateSum() {
+    private void calculateSumAndLuck() {
         // 스탯섬 계산
         int sum = (investStat != null ? investStat : 0)
                 + (creditStat  != null ? creditStat  : 0)
@@ -59,11 +59,8 @@ public class StatsDao {
                 user.setUserrank("BRONZE");
             }
         }
-    }
-
-    @PrePersist
-    @PreUpdate
-    private void calculateLuckStat() {
+        
+        // 운 스탯 계산도 같이 처리
         this.luckStat = new Random().nextInt(100);
     }
 

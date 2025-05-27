@@ -1,6 +1,8 @@
 package com.weebeeio.demo.domain.newsQuiz.dao;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -33,4 +35,6 @@ public class NewsQuizResultDao {       // 결과 고유 ID
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore 
     private User user;  // User 엔티티와의 관계
+
+
 }
