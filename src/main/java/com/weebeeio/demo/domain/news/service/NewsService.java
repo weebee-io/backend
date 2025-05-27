@@ -1,5 +1,7 @@
 package com.weebeeio.demo.domain.news.service;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -27,6 +29,12 @@ public class NewsService {
         );
 
         return newsRepository.findAll(pageRequest);
+    }
+
+
+
+    public Optional<NewsDao> getNewsById(Integer id) {
+        return newsRepository.findById(id);
     }
     
 }

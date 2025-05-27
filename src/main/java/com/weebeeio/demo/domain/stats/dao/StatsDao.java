@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import com.weebeeio.demo.domain.login.entity.User;
-
+import java.util.Random;
 
 @Data
 @Entity
@@ -28,8 +28,8 @@ public class StatsDao {
     @Column(name = "news_stat")
     private Integer newsStat;
 
-    @Column(name = "quest_stat")
-    private Integer questStat;
+    @Column(name = "luck_stat")
+    private Integer luckStat;
 
     @Column(name = "stat_sum")
     private Integer statSum;
@@ -45,7 +45,8 @@ public class StatsDao {
         // 스탯섬 계산
         int sum = (investStat != null ? investStat : 0)
                 + (creditStat  != null ? creditStat  : 0)
-                + (fiStat      != null ? fiStat      : 0);
+                + (fiStat      != null ? fiStat      : 0)
+                + (newsStat    != null ? newsStat    : 0);
         this.statSum = sum;
         
         // 사용자 랭크 계산
@@ -58,6 +59,12 @@ public class StatsDao {
                 user.setUserrank("BRONZE");
             }
         }
+    }
+
+    @PrePersist
+    @PreUpdate
+    private void calculateLuckStat() {
+        this.luckStat = new Random().nextInt(100);
     }
 
     public String getWeebeeImageName() {

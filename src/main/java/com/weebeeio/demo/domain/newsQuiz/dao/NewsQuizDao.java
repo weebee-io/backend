@@ -1,5 +1,6 @@
 package com.weebeeio.demo.domain.newsQuiz.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.weebeeio.demo.domain.news.dao.NewsDao;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -20,6 +21,7 @@ public class NewsQuizDao {
     @Column(name = "newsquiz_id")
     private Integer newsquizId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "news_id", nullable = false)
     private NewsDao news;
@@ -44,4 +46,5 @@ public class NewsQuizDao {
 
     @Column(name = "newsquiz_correct_ans", nullable = false)
     private String newsquizCorrectAns;
+
 }

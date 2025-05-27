@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.weebeeio.demo.domain.login.entity.User;
@@ -25,6 +24,7 @@ import com.weebeeio.demo.domain.quiz.service.QuizResultService;
 import com.weebeeio.demo.domain.quiz.service.QuizService;
 import com.weebeeio.demo.domain.stats.dao.StatsDao;
 import com.weebeeio.demo.domain.stats.service.StatsService;
+import com.weebeeio.demo.domain.stats.service.LuckService;
 import com.weebeeio.demo.domain.login.service.UserService;
 
 import org.springframework.http.ResponseEntity;
@@ -38,6 +38,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+
 @Tag(name = "퀴즈 API", description = "퀴즈 테스트를 진행하는 API")
 @RestController
 @RequestMapping("/quiz")
@@ -47,6 +48,7 @@ public class QuizController {
     private final QuizService quizService;
     private final QuizResultService quizResultService;
     private final StatsService statsService;
+    private final LuckService luckService;
     private final UserService userService;
     private final QuizOption2Repository quizOption2Repository;
     private final QuizOption4Repository quizOption4Repository;
@@ -93,8 +95,20 @@ public class QuizController {
         result.setIsCorrect(isCorrect);
         quizResultService.save(result);
 
-        // 5) 통계 업데이트
+        // 5) 운 스탯 보너스 적용
         int delta = quiz.getQuizLevel();
+        Integer luckStat = stats.getLuckStat();
+        if (luckStat == null) {
+            luckStat = 0;
+            stats.setLuckStat(0);
+        }
+        
+        // 정답일 경우에만 운 스탯 보너스 적용
+        if (isCorrect) {
+            delta = luckService.applyLuckBonus(delta, luckStat);
+        }
+        
+        // 통계 업데이트
         switch (quiz.getQuizSubject()) {
             case invest:
                 if (isCorrect) {
@@ -129,6 +143,14 @@ public class QuizController {
         body.put("userId", userId);
         body.put("isCorrect", isCorrect);
         body.put("message", isCorrect ? "정답" : "오답");
+        
+        // 운 스탯 관련 정보 추가
+        if (isCorrect) {
+            body.put("luckStat", luckStat);
+            body.put("originalPoints", quiz.getQuizLevel());
+            body.put("bonusPoints", delta - quiz.getQuizLevel());
+            body.put("totalPoints", delta);
+        }
 
         return ResponseEntity
                 .ok()
