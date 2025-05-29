@@ -47,14 +47,17 @@ public class NewsQuizController {
         User user = (User) auth.getPrincipal();
         Integer userId = user.getUserId();
 
-        // 2) 퀴즈 & 통계 조회
-        NewsQuizDao quiz = newsQuizService.getNewsQuizById(newsQuizId)
-                .orElseThrow(() -> new NoSuchElementException("퀘즈가 없습니다. ID: " + newsQuizId));
-        
-        // 통계 데이터 가져오기 - 개선된 메서드 사용
         StatsDao stats = statsService.getStatsById(userId)
                 .orElseThrow(() -> new NoSuchElementException("사용자 스탯이 없습니다. ID: " + userId));
         
+        if(stats.getNewsStat() == null) {
+            stats.setNewsStat(0);
+        }
+
+        // 2) 퀴즈 & 통계 조회
+        NewsQuizDao quiz = newsQuizService.getNewsQuizById(newsQuizId)
+                .orElseThrow(() -> new NoSuchElementException("퀘즈가 없습니다. ID: " + newsQuizId));
+
         // 3) 뉴스 퀴즈에 맞게 간소화된 결과 처리
         // 뉴스 퀴즈는 QuizDao와 구조가 달라서 별도 처리 필요
                 // 3) 결과 엔티티 준비
