@@ -86,9 +86,9 @@ public class NewsQuizController {
             delta = luckService.applyLuckBonus(delta, luckStat);
             
             // 통계 업데이트 - 뉴스 퀴즈는 금융 관련이므로 finance 스탯 올림
-            stats.setFiStat(stats.getFiStat() + delta);
+            stats.setNewsStat(stats.getNewsStat() + delta);
         } else {
-            // 오답일 경우는 스탯 감소하지 않도록 변경
+            stats.setNewsStat(stats.getNewsStat() - delta); 
         }
         
         statsService.save(stats);
