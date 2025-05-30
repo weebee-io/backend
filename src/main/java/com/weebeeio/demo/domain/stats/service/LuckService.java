@@ -1,7 +1,5 @@
 package com.weebeeio.demo.domain.stats.service;
 
-import com.weebeeio.demo.domain.login.entity.User;
-import com.weebeeio.demo.domain.login.repository.UserRepository;
 import com.weebeeio.demo.domain.stats.dao.StatsDao;
 import com.weebeeio.demo.domain.stats.repository.StatsRepository;
 import org.slf4j.Logger;
@@ -22,8 +20,6 @@ public class LuckService {
 
     @Autowired
     private StatsRepository statsRepository;
-    @Autowired
-    private UserRepository userRepository;
 
 
     @Scheduled(cron = "0 0 0 * * *")
@@ -32,38 +28,17 @@ public class LuckService {
         logger.info("luck 스탯 갱신 시작");
         
         List<StatsDao> allStats = statsRepository.findAll();
-        int updatedCount = 0;
         
         for (StatsDao stats : allStats) {
-            try {
-                // 사용자 엔티티 직접 조회 - 영속성 컨텍스트에서 최신 상태 확보
-                User user = userRepository.findById(stats.getUser().getUserId())
-                    .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다: " + stats.getUser().getUserId()));
-                
-                int newLuckValue = random.nextInt(101); // 0~100 사이 랜덤값
-                int oldCoin = user.getCoin();
-                int newCoin = oldCoin + newLuckValue;
-                
-                // 행운 스탯 설정
-                stats.setLuckStat(newLuckValue);
-                
-                // 코인 증가
-                user.setCoin(newCoin);
-                
-                logger.info("사용자 ID: {}, 이전 코인: {}, 추가된 코인: {}, 새로운 코인: {}", 
-                    user.getUserId(), oldCoin, newLuckValue, newCoin);
-                
-                // 각각 저장 - 사용자 엔티티 먼저 저장
-                userRepository.save(user);
-                statsRepository.save(stats);
-                
-                updatedCount++;
-            } catch (Exception e) {
-                logger.error("사용자 luck 스탯 및 코인 갱신 중 오류 발생: {}", e.getMessage(), e);
-            }
+            int newLuckValue = random.nextInt(101); // 0~100 사이 랜덤값
+            stats.setLuckStat(newLuckValue);
+            stats.getUser().setCoin(stats.getUser().getCoin() + newLuckValue);
+            statsRepository.save(stats);
+            logger.debug("사용자 ID: {}, 새로운 luck 스탯: {}", 
+                stats.getUser().getUserId(), newLuckValue);
         }
         
-        logger.info("총 {} 명 중 {} 명의 사용자 luck 스탯 및 코인 갱신 완료", allStats.size(), updatedCount);
+        logger.info("총 {} 명의 사용자 luck 스탯 갱신 완료", allStats.size());
     }
     
 
