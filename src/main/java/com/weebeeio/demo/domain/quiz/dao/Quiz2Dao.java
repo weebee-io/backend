@@ -1,8 +1,7 @@
 package com.weebeeio.demo.domain.quiz.dao;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.weebeeio.demo.domain.quiz.dao.QuizDao;
+
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -26,6 +26,8 @@ import com.weebeeio.demo.domain.stats.dao.StatsDao;
 import com.weebeeio.demo.domain.stats.service.StatsService;
 import com.weebeeio.demo.domain.stats.service.LuckService;
 import com.weebeeio.demo.domain.login.service.UserService;
+import com.weebeeio.demo.global.analytics.AnalyticsLogger;
+import com.weebeeio.demo.global.analytics.AnalyticsLogger.QuizResultEvent;
 
 import org.springframework.http.ResponseEntity;
 
@@ -136,6 +138,49 @@ public class QuizController {
                 break;
         }
         statsService.save(stats);
+        
+        // 5-1) 분석용 로그 기록
+        
+        // 통계 값 구하기
+        int beforeValue = 0;
+        int afterValue = 0;
+        String statCategory = "";
+        
+        switch (quiz.getQuizSubject()) {
+            case invest:
+                beforeValue = stats.getInvestStat() - (isCorrect ? delta : 0);
+                afterValue = stats.getInvestStat();
+                statCategory = "investStat";
+                break;
+            case credit:
+                beforeValue = stats.getCreditStat() - (isCorrect ? delta : 0);
+                afterValue = stats.getCreditStat();
+                statCategory = "creditStat";
+                break;
+            case finance:
+                beforeValue = stats.getFiStat() - (isCorrect ? delta : 0);
+                afterValue = stats.getFiStat();
+                statCategory = "fiStat";
+                break;
+        }
+        
+        // 퀴즈 결과 로깅
+        AnalyticsLogger.logQuizResult(
+            QuizResultEvent.builder()
+                .userId(userId)
+                .username(user.getUsername())
+                .userRank("NONE") // 사용자 랜크 구현 필요
+                .quizId(quizId)
+                .quizType(quiz.getQuizSubject().name()) // 퀴즈 유형(subject 사용)
+                .category(quiz.getQuizRank().name()) // 카테고리는 rank 사용
+                .isCorrect(isCorrect)
+                .difficulty(quiz.getQuizLevel())
+                .responseTimeMs(0L) // 클라이언트 응답 시간을 알 수 없으므로 0으로 설정
+                .statCategory(statCategory)
+                .statBefore(beforeValue)
+                .statAfter(afterValue)
+                .build()
+        );
 
         // 6) JSON 응답 생성
         Map<String, Object> body = new HashMap<>();

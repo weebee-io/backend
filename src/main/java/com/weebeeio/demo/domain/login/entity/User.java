@@ -57,22 +57,17 @@ public class User implements UserDetails {
     @Column(name = "last_attend")
     private LocalDate lastAttend;
 
-    /** 퀴즈 점수 (랭크·리더보드용) */
     @Builder.Default
-    @Column(name = "quiz_point", nullable = false)
-    private int quizPoint = 0;
+    @Column(name = "coin", nullable = false)
+    private int coin = 0;
 
-    /** 퀘스트 코인 (상점·출석 보상용) */
-    @Builder.Default
-    @Column(name = "quest_coin", nullable = false)
-    private int questCoin = 0;
     /* ──────────────────────────────────────────────── */
 
     /**
-     * 퀘스트 코인 잔액을 설정한다.
+     * 코인 잔액을 설정한다.
      */
-    public void setQuestCoin(int questCoin) {
-        this.questCoin = questCoin;
+    public void setCoin(int coin) {
+        this.coin = coin;
     }
 
     /**

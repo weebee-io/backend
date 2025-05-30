@@ -19,6 +19,8 @@ import com.weebeeio.demo.domain.newsQuiz.dao.NewsQuizDao;
 import com.weebeeio.demo.domain.newsQuiz.service.NewsQuizResultService;
 import com.weebeeio.demo.domain.newsQuiz.service.NewsQuizService;
 import com.weebeeio.demo.domain.newsQuiz.dao.NewsQuizResultDao;
+import com.weebeeio.demo.global.analytics.AnalyticsLogger;
+import com.weebeeio.demo.global.analytics.AnalyticsLogger.NewsQuizResultEvent;
 
 
 import org.springframework.security.core.Authentication;
@@ -95,6 +97,27 @@ public class NewsQuizController {
         }
         
         statsService.save(stats);
+        
+        // 5-1) 분석용 로그 기록
+        // 클라이언트 응답 시간이 없으므로 NewsQuizResultDao의 newsquizDate를 기준으로 추정
+        long responseTimeMs = 0; // 응답 시간은 클라이언트 사이드에서 보내주는 것이 필요하지만 일단 0으로 설정
+        
+        // 뉴스퀴즈 결과 로깅
+        AnalyticsLogger.logNewsQuizResult(
+            NewsQuizResultEvent.builder()
+                .userId(userId)
+                .username(user.getUsername())
+                .userRank("NONE") // 사용자 랜크 구현 필요
+                .newsQuizId(newsQuizId)
+                .newsTitle(quiz.getNewsquizContent()) // 뉴스 타이틀 대신 퀴즈 내용 사용
+                .isCorrect(isCorrect)
+                .difficulty(Integer.parseInt(quiz.getNewsquizLevel())) // difficulty는 레벨로 대체
+                .category("NEWS") // 고정 카테고리 사용
+                .responseTimeMs(responseTimeMs)
+                .newsStatBefore(stats.getNewsStat() - (isCorrect ? delta : -delta))
+                .newsStatAfter(stats.getNewsStat())
+                .build()
+        );
 
         // 6) JSON 응답 생성
         Map<String, Object> body = new HashMap<>();

@@ -21,6 +21,19 @@
         </encoder>
     </appender>
     
+    <!-- 분석용 로그를 위한 별도 파일 설정 -->
+    <appender name="ANALYTICS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/analytics.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/analytics.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>90</maxHistory> <!-- 분석 데이터는 더 오래 보관 -->
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeMdc>true</includeMdc>
+            <customFields>{"application":"webee-quiz","logType":"analytics"}</customFields>
+        </encoder>
+    </appender>
+    
     <!-- 액세스 로그용 파일 별도 설정 -->
     <appender name="ACCESS_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH}/access.log</file>
@@ -56,6 +69,12 @@
     <!-- 비즈니스 로직 로그는 BUSINESS_LOG로 분리 -->
     <logger name="com.weebeeio.demo.domain.quiz.service" level="INFO" additivity="false">
         <appender-ref ref="BUSINESS_LOG" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    
+    <!-- 분석용 로그는 ANALYTICS로 분리 -->
+    <logger name="com.weebeeio.demo.global.analytics" level="INFO" additivity="false">
+        <appender-ref ref="ANALYTICS" />
         <appender-ref ref="CONSOLE" />
     </logger>
     
