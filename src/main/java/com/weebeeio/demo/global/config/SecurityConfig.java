@@ -109,9 +109,21 @@ public class SecurityConfig {
                 new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:3000");
+        
+        // 여러 origin 허용
+        config.addAllowedOrigin("http://localhost:3000"); // 로컬 프론트엔드
+        config.addAllowedOrigin("http://127.0.0.1:3000"); // 로컬 IP 주소
+        
+        // 프로덕션 환경 프론트엔드 주소들 추가
+        config.addAllowedOrigin("http://52.78.4.114:3000"); // EC2 서버 IP 주소
+        
+        // 개발 테스트용 와일드카드 설정 - 보안상 위험할 수 있으므로 개발 중에만 사용
+        // config.addAllowedOriginPattern("*"); // 모든 origin 허용 (보안에 주의)
+        
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
+        config.addExposedHeader("Authorization"); // JWT 토큰 노출 허용
+        
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
