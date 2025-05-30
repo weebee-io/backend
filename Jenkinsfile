@@ -37,7 +37,7 @@ pipeline {
                 // EC2 서버에 SSH로 접속하여 배포
                 sshagent(['ec2-ssh-key']) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@your-ec2-ip '
+                        ssh -o StrictHostKeyChecking=no ubuntu@52.78.4.114 '
                             docker pull ${DOCKER_IMAGE}:latest && 
                             docker stop weebee-app || true && 
                             docker rm weebee-app || true && 
