@@ -35,7 +35,7 @@ pipeline {
         stage('Deploy to EC2') {
             steps {
                 // EC2 서버에 SSH로 접속하여 배포
-                sshagent(['ec2-ssh-key']) {
+                sshagent(['javaBackend_EC2_SSH_key']) {
                     sh """
                         ssh -o StrictHostKeyChecking=no ubuntu@52.78.4.114 '
                             docker pull ${DOCKER_IMAGE}:latest && 
