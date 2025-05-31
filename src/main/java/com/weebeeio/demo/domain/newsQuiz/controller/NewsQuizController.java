@@ -111,7 +111,6 @@ public class NewsQuizController {
                 .newsQuizId(newsQuizId)
                 .newsTitle(quiz.getNewsquizContent()) // 뉴스 타이틀 대신 퀴즈 내용 사용
                 .isCorrect(isCorrect)
-                .difficulty(Integer.parseInt(quiz.getNewsquizLevel())) // difficulty는 레벨로 대체
                 .category("NEWS") // 고정 카테고리 사용
                 .responseTimeMs(responseTimeMs)
                 .newsStatBefore(stats.getNewsStat() - (isCorrect ? delta : -delta))
