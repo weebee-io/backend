@@ -26,5 +26,14 @@ filebeat.inputs:
   json.message_key: message
   tags: ["business"]
 
+- type: log
+  enabled: true
+  paths:
+    - /var/log/logs/analytics.log
+  json.keys_under_root: true
+  json.add_error_key: true
+  json.message_key: message
+  tags: ["analytics"]
+
 output.logstash:
   hosts: ["logstash:5044"]
