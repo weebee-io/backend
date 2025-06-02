@@ -36,4 +36,4 @@ filebeat.inputs:
   tags: ["analytics"]
 
 output.logstash:
-  hosts: ["logstash:5044"]
+  hosts: ["52.78.209.43:5044"]
