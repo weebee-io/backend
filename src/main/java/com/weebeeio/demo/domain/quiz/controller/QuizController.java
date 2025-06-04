@@ -29,6 +29,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+<<<<<<< Updated upstream
+=======
+import org.springframework.data.repository.query.Param;
+
+>>>>>>> Stashed changes
 @Tag(name = "퀴즈 API", description = "퀴즈 테스트를 진행하는 API")
 @RestController
 @RequestMapping("/quiz")
@@ -142,6 +147,14 @@ public class QuizController {
             return ResponseEntity.badRequest().body("파일 파싱 중 오류가 발생했습니다: " + e.getMessage());
         }
         return ResponseEntity.ok("총 " + count + "개의 퀴즈가 등록되었습니다.");
+    }
+
+    @Operation(summary = "퀴즈 정답률 조회", description = "특정 퀴즈의 실시간 정답률을 조회합니다.")
+    @GetMapping("/correct-rate/{quizId}")
+    public ResponseEntity<Map<String, Object>> getQuizCorrectRate(
+            @PathVariable Integer quizId) {
+        Map<String, Object> result = quizResultService.getQuizCorrectRate(quizId);
+        return ResponseEntity.ok(result);
     }
 
 }
