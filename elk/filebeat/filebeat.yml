@@ -1,0 +1,39 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/logs/webee.log
+  json.keys_under_root: true
+  json.add_error_key: true
+  json.message_key: message
+  tags: ["application"]
+
+- type: log
+  enabled: true
+  paths:
+    - /var/log/logs/access.log
+  json.keys_under_root: true
+  json.add_error_key: true
+  json.message_key: message
+  tags: ["access"]
+  
+- type: log
+  enabled: true
+  paths:
+    - /var/log/logs/business.log
+  json.keys_under_root: true
+  json.add_error_key: true
+  json.message_key: message
+  tags: ["business"]
+
+- type: log
+  enabled: true
+  paths:
+    - /var/log/logs/analytics.log
+  json.keys_under_root: true
+  json.add_error_key: true
+  json.message_key: message
+  tags: ["analytics"]
+
+output.logstash:
+  hosts: ["52.78.209.43:5044"]

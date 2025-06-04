@@ -1,35 +1,55 @@
 package com.weebeeio.demo.domain.quiz.dao;
 
 import jakarta.persistence.*;
-import lombok.Data;
-
-
-
+import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Data
 @Entity
 @Table(name = "quiz")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@NoArgsConstructor           // JPA용 무인자 생성자
+@AllArgsConstructor          // @Builder와 함께 사용
+@Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class QuizDao {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "quiz_id")
-    private Integer quizId;          // 퀴즈 고유 ID
+    private Integer quizId;
 
-    @Column(name = "content", nullable = false, columnDefinition="TEXT")
-    private String quizcontent;
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
+    private String quizContent;   // camelCase
 
     @Column(name = "subject", nullable = false)
-    private String subject;          // 퀴즈 주제
+    private QuizSubject quizSubject;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "quiz_rank", nullable = false)
+    private QuizRank quizRank;
 
     @Column(name = "quiz_level")
-    private Integer quizLevel;        // 퀴즈 난이도 (1,3,5) 실버 브론즈 골드
+    private Integer quizLevel;
 
-    @Column(name = "quiz_answer", nullable = false)
-    private String quizAnswer;       // 퀴즈 정답
+    @OneToOne(mappedBy = "quiz", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Quiz2Dao option2;
 
-   
+    @OneToOne(mappedBy = "quiz", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Quiz4Dao option4;
+
+    @Transient
+    public String getCorrectAns() {
+        return (quizRank == QuizRank.GOLD)
+             ? option4 != null ? option4.getCorrectAns() : null
+             : option2 != null ? option2.getCorrectAns() : null;
+    }
+
+    public enum QuizRank {
+        BRONZE, SILVER, GOLD
+    }
+    public enum QuizSubject {
+        invest, finance , credit
+    }
 }
 
 

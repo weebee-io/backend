@@ -45,16 +45,16 @@ public class SurveyService {
 
         // 3) Survey 엔티티 생성 및 필드 매핑
         Survey survey = Survey.builder()
-            .user(user)
-            .assetType(req.getAssetType())
-            .investResource(req.getInvestResource())
-            .creditScore(req.getCreditScore())
-            .delinquentCount(req.getDelinquentCount())
-            .debtRatio(req.getDebtRatio())
-            .consumptionScore(req.getConsumptionScore())
-            .digitalFriendly(req.getDigitalFriendly())
-            .finKnowScore(req.getFinKnowScore())
-            .build();
+                .user(user)                               // @MapsId 로 인해 userId 자동 매핑
+                .riskProfileScore(req.getRiskProfileScore())
+                .complexProductFlag(req.getComplexProductFlag())
+                .isMarried(req.getIsMarried())
+                .essentialPct(req.getEssentialPct())
+                .discretionaryPct(req.getDiscretionaryPct())
+                .savInvRatio(req.getSavInvRatio())
+                .spendVolatility(req.getSpendVolatility())
+                .digitalEngagement(req.getDigitalEngagement())
+                .build();
 
         // 4) DB에 설문 응답 저장
         survey = surveyRepository.save(survey);
@@ -64,14 +64,14 @@ public class SurveyService {
         // 6) 저장 결과를 DTO로 변환하여 반환
         return new SurveyResponse(
             survey.getUserId(),
-            survey.getAssetType(),
-            survey.getInvestResource(),
-            survey.getCreditScore(),
-            survey.getDelinquentCount(),
-            survey.getDebtRatio(),
-            survey.getConsumptionScore(),
-            survey.getDigitalFriendly(),
-            survey.getFinKnowScore(),
+            survey.getRiskProfileScore(),
+            survey.getComplexProductFlag(),
+            survey.getIsMarried(),
+            survey.getEssentialPct(),
+            survey.getDiscretionaryPct(),
+            survey.getSavInvRatio(),
+            survey.getSpendVolatility(),
+            survey.getDigitalEngagement(),
             /* 예측 결과 */ null
         );
     }

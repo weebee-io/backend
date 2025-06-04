@@ -57,22 +57,17 @@ public class User implements UserDetails {
     @Column(name = "last_attend")
     private LocalDate lastAttend;
 
-    /** 퀴즈 점수 (랭크·리더보드용) */
     @Builder.Default
-    @Column(name = "quiz_point", nullable = false)
-    private int quizPoint = 0;
+    @Column(name = "coin", nullable = false)
+    private int coin = 0;
 
-    /** 퀘스트 코인 (상점·출석 보상용) */
-    @Builder.Default
-    @Column(name = "quest_coin", nullable = false)
-    private int questCoin = 0;
     /* ──────────────────────────────────────────────── */
 
     /**
-     * 퀘스트 코인 잔액을 설정한다.
+     * 코인 잔액을 설정한다.
      */
-    public void setQuestCoin(int questCoin) {
-        this.questCoin = questCoin;
+    public void setCoin(int coin) {
+        this.coin = coin;
     }
 
     /**
@@ -118,5 +113,15 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         // 계정 사용 가능한지 확인하는 로직직
         return true; // ture -> 사용 가능
+    }
+
+    /**
+     * User는 직접 statSum을 가지고 있지 않으므로,
+     * 이 메서드를 호출할 때는 주의가 필요합니다.
+     * JSON 직렬화 시 이 메서드가 호출될 수 있으므로
+     * 예외 대신 기본값 0을 반환합니다.
+     */
+    public int getStatSum() {
+        return 0; // 기본값 반환
     }
 }

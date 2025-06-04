@@ -3,7 +3,6 @@ package com.weebeeio.demo.domain.leaderboard.service;
 import com.weebeeio.demo.domain.leaderboard.dto.LeaderboardDto;
 import com.weebeeio.demo.domain.leaderboard.repository.LeaderboardRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LeaderboardService {
 
-    @Autowired
+
     private final LeaderboardRepository leaderboardRepository;
 
     /**

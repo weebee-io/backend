@@ -1,0 +1,91 @@
+# # docker-compose.yml
+version: '3.8'
+# services:
+#   kafka:
+#     image: confluentinc/cp-kafka:latest   # Confluent Kafka 이미지 (KRaft 지원)
+#     container_name: kafka
+#     user: root     
+#     ports:
+#       - "9092:9092"    # 클라이언트 접속용 포트 매핑
+#       - "9093:9093"    # 컨트롤러 쿼럼 통신 포트 매핑
+#     environment:
+#       KAFKA_KRAFT_MODE: "true"                       # KRaft 모드 활성화:contentReference[oaicite:18]{index=18}
+#       KAFKA_PROCESS_ROLES: "controller,broker"       # 이 컨테이너를 컨트롤러 겸 브로커로 사용:contentReference[oaicite:19]{index=19}
+#       KAFKA_NODE_ID: "1"                             # 노드 ID (고유 값):contentReference[oaicite:20]{index=20}
+#       KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:9093"  # 컨트롤러 쿼럼 목록 (노드ID@호스트:포트):contentReference[oaicite:21]{index=21}
+#       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093   # 리스너 설정:contentReference[oaicite:22]{index=22}
+#       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT  # 리스너 프로토콜 매핑:contentReference[oaicite:23]{index=23}
+#       KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"   # 브로커간 통신에 PLAINTEXT 사용
+#       KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"   # 컨트롤러 통신에 사용할 리스너 이름
+#       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://host.docker.internal:9092    # 외부에 광고할 브로커 주소
+#       KAFKA_LOG_DIRS: "/var/lib/kafka/data"           # Kafka 로그(데이터) 저장 위치
+#       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"         # 토픽 자동 생성 활성화 (개발 편의용):contentReference[oaicite:24]{index=24}
+#       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"     # 내부 토픽(__consumer_offsets 등) 레플리카 수:contentReference[oaicite:25]{index=25}
+#       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"     # 컨슈머 그룹 재밸런스 지연 시간
+#       KAFKA_LOG_RETENTION_HOURS: "168"                # 로그 보존 기간 (168시간=7일):contentReference[oaicite:26]{index=26}
+#       CLUSTER_ID: "test-cluster-id"                   # 클러스터 ID (새 클러스터 초기화용)
+#     volumes:
+#       - ./data:/var/lib/kafka/data    # 호스트의 데이터 디렉토리를 컨테이너에 마운트 (데이터 영속화)
+
+#   kafka-ui:
+#     image: provectuslabs/kafka-ui:latest
+#     container_name: kafka-ui
+#     ports:
+#       - "8081:8080"   # 브라우저에서 접근할 포트
+#     environment:
+#       # 클러스터 이름은 자유롭게 지정
+#       KAFKA_CLUSTERS_0_NAME: local-cluster
+#       # 내부 도커 네트워크 서비스명:포트
+#       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: http://host.docker.internal:9092
+#       # 보안 프로토콜 (PLAINTEXT 이면 아래 두 줄만으로 충분)
+#       KAFKA_CLUSTERS_0_SECURITY_PROTOCOL: PLAINTEXT
+#       # (인증/암호화 사용 시 필요)
+#       # KAFKA_CLUSTERS_0_SASL_MECHANISM: SCRAM-SHA-256
+#       # KAFKA_CLUSTERS_0_SASL_USERNAME: yourUser
+#       # KAFKA_CLUSTERS_0_SASL_PASSWORD: yourPassword
+#     depends_on:
+#       - kafka
+
+services:
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    user: root
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+      - "9093:9093"
+    environment:
+      KAFKA_KRAFT_MODE: "true"
+      KAFKA_PROCESS_ROLES: "controller,broker"
+      KAFKA_NODE_ID: "1"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:9093"
+
+
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:29092,PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://host.docker.internal:29092,PLAINTEXT://localhost:9092,CONTROLLER://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
+  
+      KAFKA_LOG_DIRS: "/var/lib/kafka/data"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
+      KAFKA_LOG_RETENTION_HOURS: "168"
+      CLUSTER_ID: "test-cluster-id"
+    volumes:
+      - ./data:/var/lib/kafka/data
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "8081:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local-cluster
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: http://host.docker.internal:29092
+      KAFKA_CLUSTERS_0_SECURITY_PROTOCOL: PLAINTEXT
+    depends_on:
+      - kafka

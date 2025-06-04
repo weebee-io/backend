@@ -1,11 +1,11 @@
 package com.weebeeio.demo.domain.stats.dao;
 
 public enum WeebeeLevel {
-    LEVEL_1(0, 2, "weebee_lev_1"),
-    LEVEL_2(3, 9, "weebee_lev_2"),
-    LEVEL_3(10, 19, "weebee_lev_3"),
-    LEVEL_4(20, 29, "weebee_lev_4"),
-    LEVEL_5(30, Integer.MAX_VALUE, "weebee_lev_5");
+    LEVEL_1(0, 200, "weebee_lev_1"),
+    LEVEL_2(201, 400, "weebee_lev_2"),
+    LEVEL_3(401, 600, "weebee_lev_3"),
+    LEVEL_4(601, 800, "weebee_lev_4"),
+    LEVEL_5(801, Integer.MAX_VALUE, "weebee_lev_5");
 
     private final int minStatSum;
     private final int maxStatSum;

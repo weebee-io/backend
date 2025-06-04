@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="LOG_PATH" value="./logs" />
+    <property name="LOG_FILE_NAME" value="webee" />
+    
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/${LOG_FILE_NAME}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${LOG_FILE_NAME}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeMdc>true</includeMdc>
+            <customFields>{"application":"webee-quiz"}</customFields>
+        </encoder>
+    </appender>
+    
+    <!-- 분석용 로그를 위한 별도 파일 설정 -->
+    <appender name="ANALYTICS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/analytics.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/analytics.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>90</maxHistory> <!-- 분석 데이터는 더 오래 보관 -->
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeMdc>true</includeMdc>
+            <customFields>{"application":"webee-quiz","logType":"analytics"}</customFields>
+        </encoder>
+    </appender>
+    
+    <!-- 액세스 로그용 파일 별도 설정 -->
+    <appender name="ACCESS_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/access.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/access.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeMdc>true</includeMdc>
+            <customFields>{"log_type":"access"}</customFields>
+        </encoder>
+    </appender>
+    
+    <!-- 비즈니스 로그용 파일 별도 설정 -->
+    <appender name="BUSINESS_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/business.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/business.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeMdc>true</includeMdc>
+            <customFields>{"log_type":"business"}</customFields>
+        </encoder>
+    </appender>
+    
+    <!-- 컨트롤러 로그는 ACCESS_LOG로 분리 -->
+    <logger name="com.weebeeio.demo.domain.quiz.controller" level="INFO" additivity="false">
+        <appender-ref ref="ACCESS_LOG" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    
+    <!-- 비즈니스 로직 로그는 BUSINESS_LOG로 분리 -->
+    <logger name="com.weebeeio.demo.domain.quiz.service" level="INFO" additivity="false">
+        <appender-ref ref="BUSINESS_LOG" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    
+    <!-- 분석용 로그는 ANALYTICS로 분리 -->
+    <logger name="com.weebeeio.demo.global.analytics" level="INFO" additivity="false">
+        <appender-ref ref="ANALYTICS" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>

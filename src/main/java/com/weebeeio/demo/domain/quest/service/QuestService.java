@@ -36,7 +36,7 @@ public class QuestService {
         }
 
         // 3) 사용자 코인·출석일 갱신
-        user.setQuestCoin(user.getQuestCoin() + REWARD);
+        user.setCoin(user.getCoin() + REWARD);
         user.setLastAttend(today);
 
         // 4) 퀘스트 테이블 상태 변경

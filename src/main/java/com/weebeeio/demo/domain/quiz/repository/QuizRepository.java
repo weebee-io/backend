@@ -1,10 +1,10 @@
 package com.weebeeio.demo.domain.quiz.repository;
 
 import com.weebeeio.demo.domain.quiz.dao.QuizDao;
-
+import com.weebeeio.demo.domain.quiz.dao.QuizDao.QuizRank;
+import com.weebeeio.demo.domain.quiz.dao.QuizDao.QuizSubject;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface QuizRepository extends JpaRepository<QuizDao, Integer> {
 
-    Optional<QuizDao> findBySubjectAndQuizLevel(String subject, Integer quizLevel);
+    List<QuizDao> findByQuizSubjectAndQuizRank(QuizSubject quizSubject, QuizRank quizrank);
 
     List<QuizDao> findByQuizId(Integer quizId);
 

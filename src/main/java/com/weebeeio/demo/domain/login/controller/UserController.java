@@ -5,6 +5,7 @@ import com.weebeeio.demo.domain.login.dto.UserLoginRequestDto;
 import com.weebeeio.demo.domain.login.dto.UserSignupRequestDto;
 import com.weebeeio.demo.domain.login.entity.User;
 import com.weebeeio.demo.domain.login.service.UserService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+
 
     /** 회원가입 : 토큰 없이 사용자 정보만 반환 */
     @PostMapping("/signup")
