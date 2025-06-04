@@ -6,6 +6,8 @@ import com.weebeeio.demo.domain.quiz.repository.QuizResultRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +51,20 @@ public class QuizResultService {
         return quizResultRepository.findAllByUser_UserId(userId);
     }
 
-
+    public Map<String, Object> getQuizCorrectRate(Integer quizId) {
+        Long totalAttempts = quizResultRepository.countTotalAttemptsByQuizId(quizId);
+        Long correctAttempts = quizResultRepository.countCorrectAttemptsByQuizId(quizId);
+        
+        double correctRate = totalAttempts > 0 ? 
+            (double) correctAttempts / totalAttempts * 100 : 0.0;
+        
+        Map<String, Object> result = new HashMap<>();
+        result.put("quizId", quizId);
+        result.put("totalAttempts", totalAttempts);
+        result.put("correctAttempts", correctAttempts);
+        result.put("correctRate", Math.round(correctRate * 100.0) / 100.0); // 소수점 2자리까지
+        
+        return result;
+    }
 
 }
