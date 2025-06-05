@@ -110,16 +110,20 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         
-        // 여러 origin 허용
+        // 도커 환경에서 CORS 문제를 해결하기 위한 설정
+        
+        // 와일드카드 패턴을 사용하여 모든 서비스 간 통신 허용
+        // 개발/테스트 환경에서만 사용하고, 프로덕션에서는 특정 도메인만 허용하는 것이 좋습니다.
+        config.addAllowedOriginPattern("*"); // 모든 오리진 허용 (도커 네트워크 통신을 위해 필요)
+        
+        // 위의 설정을 대신해서 아래와 같은 개별 오리진만 허용하는 것이 보안에 더 좋지만,
+        // 현재 도커 환경에서는 어떤 오리진을 통해 호출될지 모르기 때문에 와일드카드 사용
+        /*
         config.addAllowedOrigin("http://localhost:3000"); // 로컬 프론트엔드
         config.addAllowedOrigin("http://127.0.0.1:3000"); // 로컬 IP 주소
-        
-        // 프로덕션 환경 프론트엔드 주소들 추가
         config.addAllowedOrigin("http://52.78.4.114:3000"); // EC2 서버 IP 주소
         config.addAllowedOrigin("http://52.78.4.114:8080"); // Nginx 프록시 주소
-        
-        // 개발 테스트용 와일드카드 설정 - 보안상 위험할 수 있으므로 개발 중에만 사용
-        // config.addAllowedOriginPattern("*"); // 모든 origin 허용 (보안에 주의)
+        */
         
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
