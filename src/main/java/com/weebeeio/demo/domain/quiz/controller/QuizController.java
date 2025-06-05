@@ -41,6 +41,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.repository.query.Param;
+
 @Tag(name = "퀴즈 API", description = "퀴즈 테스트를 진행하는 API")
 @RestController
 @RequestMapping("/quiz")
@@ -337,6 +339,14 @@ public class QuizController {
         }
 
         return ResponseEntity.ok("총 " + count + "개의 퀴즈가 등록되었습니다.");
+    }
+
+    @Operation(summary = "퀴즈 정답률 조회", description = "특정 퀴즈의 실시간 정답률을 조회합니다.")
+    @GetMapping("/correct-rate/{quizId}")
+    public ResponseEntity<Map<String, Object>> getQuizCorrectRate(
+            @PathVariable Integer quizId) {
+        Map<String, Object> result = quizResultService.getQuizCorrectRate(quizId);
+        return ResponseEntity.ok(result);
     }
 
 }
