@@ -34,6 +34,19 @@
         </encoder>
     </appender>
     
+    <!-- 퀴즈 참여 로그를 위한 별도 파일 설정 -->
+    <appender name="QUIZ_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/quiz.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/quiz.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>90</maxHistory> <!-- 퀴즈 데이터도 오래 보관 -->
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeMdc>true</includeMdc>
+            <customFields>{"application":"webee-quiz","logType":"quiz_engagement"}</customFields>
+        </encoder>
+    </appender>
+    
     <!-- 액세스 로그용 파일 별도 설정 -->
     <appender name="ACCESS_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH}/access.log</file>
@@ -72,8 +85,28 @@
         <appender-ref ref="CONSOLE" />
     </logger>
     
-    <!-- 분석용 로그는 ANALYTICS로 분리 -->
+    <!-- 분석용 로그는 ANALYTICS로 분리, 퀴즈 참여 로그는 제외 -->
     <logger name="com.weebeeio.demo.global.analytics" level="INFO" additivity="false">
+        <appender-ref ref="ANALYTICS" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    
+    <!-- 퀴즈 참여 로그 필터 - eventType이 QUIZ_ENGAGEMENT인 경우만 -->
+    <appender name="ASYNC_QUIZ_LOG" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="QUIZ_LOG" />
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator class="ch.qos.logback.classic.boolex.JaninoEventEvaluator">
+                <expression>
+                    return mdc.get("eventType") != null &amp;&amp; mdc.get("eventType").equals("QUIZ_ENGAGEMENT");
+                </expression>
+            </evaluator>
+            <OnMatch>ACCEPT</OnMatch>
+            <OnMismatch>DENY</OnMismatch>
+        </filter>
+    </appender>
+    
+    <logger name="com.weebeeio.demo.global.analytics.AnalyticsLogger" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC_QUIZ_LOG" />
         <appender-ref ref="ANALYTICS" />
         <appender-ref ref="CONSOLE" />
     </logger>
