@@ -111,20 +111,17 @@ public class SecurityConfig {
         config.setAllowCredentials(true);
         
         // 도커 환경에서 CORS 문제를 해결하기 위한 설정
-        
-        // 와일드카드 패턴을 사용하여 모든 서비스 간 통신 허용
-        // 개발/테스트 환경에서만 사용하고, 프로덕션에서는 특정 도메인만 허용하는 것이 좋습니다.
-        config.addAllowedOriginPattern("*"); // 모든 오리진 허용 (도커 네트워크 통신을 위해 필요)
-        
-        // 위의 설정을 대신해서 아래와 같은 개별 오리진만 허용하는 것이 보안에 더 좋지만,
-        // 현재 도커 환경에서는 어떤 오리진을 통해 호출될지 모르기 때문에 와일드카드 사용
-        /*
-        config.addAllowedOrigin("http://localhost:3000"); // 로컬 프론트엔드
-        config.addAllowedOrigin("http://127.0.0.1:3000"); // 로컬 IP 주소
-        config.addAllowedOrigin("http://52.78.4.114:3000"); // EC2 서버 IP 주소
+        // 특정 오리진만 허용 (와일드카드는 setAllowCredentials(true)와 함께 사용할 수 없음)
         config.addAllowedOrigin("http://52.78.4.114:8080"); // Nginx 프록시 주소
-        */
+        config.addAllowedOrigin("http://localhost:3000"); // 로컬 프론트엔드 1
+        config.addAllowedOrigin("http://localhost:3010"); // 로컬 프론트엔드 2
+        config.addAllowedOrigin("http://127.0.0.1:3000"); // 로컬 IP 주소 1
+        config.addAllowedOrigin("http://127.0.0.1:3010"); // 로컬 IP 주소 2
+        config.addAllowedOrigin("http://52.78.4.114:3000"); // EC2 서버 IP 주소 1
+        config.addAllowedOrigin("http://52.78.4.114:3010"); // EC2 서버 IP 주소 2
+        config.addAllowedOrigin("http://52.78.4.114"); // 기본 도메인만
         
+        // 헤더, 메서드 설정
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.addExposedHeader("Authorization"); // JWT 토큰 노출 허용
