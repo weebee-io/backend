@@ -2,6 +2,15 @@ filebeat.inputs:
 - type: log
   enabled: true
   paths:
+    - /var/log/logs/event_analytics.log
+  json.keys_under_root: true
+  json.add_error_key: true
+  json.message_key: message
+  tags: ["event_analytics"]
+  
+- type: log
+  enabled: true
+  paths:
     - /var/log/logs/webee.log
   json.keys_under_root: true
   json.add_error_key: true

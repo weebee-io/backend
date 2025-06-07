@@ -59,6 +59,9 @@ public class SecurityConfig {
                                 "/quiz/admin/upload"
                         ).permitAll()
 
+                        // 통합 이벤트 로깅 API - 인증 없이 허용
+                        .requestMatchers(HttpMethod.POST, "/api/analytics/events").permitAll()
+
                         // 설문 제출 API (POST /surveys) – 인증 없이 허용
                         .requestMatchers(HttpMethod.POST, "/surveys").permitAll()
 

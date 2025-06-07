@@ -5,7 +5,11 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 
+import com.weebeeio.demo.global.analytics.dto.EventDto;
+
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 분석을 위한 구조화된 로그를 생성하는 클래스
@@ -157,5 +161,98 @@ public class AnalyticsLogger {
         private LocalDateTime endTime;
         private boolean isCompleted;
         private Long durationSeconds; // 진행 시간(초)
+    }
+
+    /**
+     * 일반 이벤트를 로깅하는 메서드
+     * @param eventDto 이벤트 DTO 객체
+     */
+    public static void logEvent(EventDto eventDto) {
+        try {
+            // 이벤트 타입에 따른 로깅
+            switch (eventDto.getEventType()) {
+                case "newsViewed":
+                    log.info("ANALYTICS - News Viewed: {}", getPropertiesSummary(eventDto.getProperties()));
+                    break;
+                case "quizStarted":
+                    log.info("ANALYTICS - Quiz Started: {}", getPropertiesSummary(eventDto.getProperties()));
+                    break;
+                case "quizSubmitted":
+                    log.info("ANALYTICS - Quiz Submitted: {}", getPropertiesSummary(eventDto.getProperties()));
+                    break;
+                default:
+                    log.info("ANALYTICS - {}: {}", eventDto.getEventType(), getPropertiesSummary(eventDto.getProperties()));
+            }
+        } finally {
+            MDC.clear();
+        }
+    }
+
+    /**
+     * properties 맵을 문자열로 변환하는 헬퍼 메서드
+     */
+    private static String getPropertiesSummary(Map<String, Object> properties) {
+        if (properties == null) {
+            return "{}";
+        }
+        return properties.entrySet().stream()
+            .map(e -> e.getKey() + "=" + e.getValue())
+            .collect(Collectors.joining(", ", "{", "}"));
+    }
+
+    /**
+     * 뉴스 조회 이벤트를 로깅하는 메서드
+     */
+    public static void logNewsViewed(NewsViewedEvent event) {
+        try {
+            MDC.put("eventType", "NEWS_VIEWED");
+            MDC.put("userId", String.valueOf(event.getUserId()));
+            MDC.put("username", event.getUsername());
+            MDC.put("newsId", String.valueOf(event.getNewsId()));
+            MDC.put("experimentNewsLayout", event.getExperimentNewsLayout());
+            
+            log.info("ANALYTICS - News Viewed: userId={}, newsId={}, layout={}", 
+                event.getUserId(), event.getNewsId(), event.getExperimentNewsLayout());
+        } finally {
+            MDC.clear();
+        }
+    }
+
+    /**
+     * 뉴스 요약 클릭 이벤트를 로깅하는 메서드
+     */
+    public static void logNewsSummaryClicked(NewsSummaryClickedEvent event) {
+        try {
+            MDC.put("eventType", "NEWS_SUMMARY_CLICKED");
+            MDC.put("userId", String.valueOf(event.getUserId()));
+            MDC.put("username", event.getUsername());
+            MDC.put("newsId", String.valueOf(event.getNewsId()));
+            MDC.put("summaryLength", String.valueOf(event.getSummaryLength()));
+            MDC.put("summaryStyle", event.getSummaryStyle());
+            
+            log.info("ANALYTICS - News Summary Clicked: userId={}, newsId={}, length={}, style={}", 
+                event.getUserId(), event.getNewsId(), event.getSummaryLength(), event.getSummaryStyle());
+        } finally {
+            MDC.clear();
+        }
+    }
+
+    @Data
+    @Builder
+    public static class NewsViewedEvent {
+        private Integer userId;
+        private String username;
+        private Integer newsId;
+        private String experimentNewsLayout;
+    }
+
+    @Data
+    @Builder
+    public static class NewsSummaryClickedEvent {
+        private Integer userId;
+        private String username;
+        private Integer newsId;
+        private Integer summaryLength;
+        private String summaryStyle;
     }
 }

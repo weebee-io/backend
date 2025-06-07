@@ -21,7 +21,20 @@
         </encoder>
     </appender>
     
-    <!-- 분석용 로그를 위한 별도 파일 설정 -->
+    <!-- 통합 이벤트 애널리틱스 로그를 위한 파일 설정 -->
+    <appender name="EVENT_ANALYTICS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/event_analytics.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/event_analytics.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>90</maxHistory> <!-- 분석 데이터는 90일 보관 -->
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeMdc>true</includeMdc>
+            <customFields>{"application":"webee-event-log","logType":"event_analytics"}</customFields>
+        </encoder>
+    </appender>
+    
+    <!-- 분석용 로그를 위한 별도 파일 설정 (기존) -->
     <appender name="ANALYTICS" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH}/analytics.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -88,6 +101,12 @@
     <!-- 분석용 로그는 ANALYTICS로 분리, 퀴즈 참여 로그는 제외 -->
     <logger name="com.weebeeio.demo.global.analytics" level="INFO" additivity="false">
         <appender-ref ref="ANALYTICS" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    
+    <!-- 통합 이벤트 로깅은 EVENT_ANALYTICS로 분리 -->
+    <logger name="com.weebeeio.demo.global.analytics.controller.AnalyticsController" level="INFO" additivity="false">
+        <appender-ref ref="EVENT_ANALYTICS" />
         <appender-ref ref="CONSOLE" />
     </logger>
     
